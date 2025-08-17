@@ -24,6 +24,9 @@ jobs:
           #!/bin/bash
           set -e
 
+          # Create documentation directory if it doesn't exist
+          mkdir -p documentation
+
           # Function to validate URL
           validate_url() {
             local url="$1"
@@ -49,13 +52,13 @@ jobs:
 
             # Make HTTP request and capture both status and content
             temp_file=$(mktemp)
-            status=$(curl -s -w "%{http_code}" -o "$temp_file" "$url" 2>/dev/null || \
-              echo "000")
+            status=$(curl -s -w "%{http_code}" -o "$temp_file" "$url" \
+              2>/dev/null || echo "000")
 
             if [ "$status" = "200" ]; then
               echo "SUCCESS: Downloaded content from $url (HTTP $status)"
-              cp "$temp_file" "${name}.md"
-              echo "Created/updated: ${name}.md"
+              cp "$temp_file" "documentation/${name}.md"
+              echo "Created/updated: documentation/${name}.md"
               rm -f "$temp_file"
               return 0
             else
@@ -94,8 +97,8 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          # Add all markdown files
-          git add *.md
+          # Add all markdown files from documentation directory
+          git add documentation/
 
           # Check if there are changes to commit
           if git diff --staged --quiet; then
