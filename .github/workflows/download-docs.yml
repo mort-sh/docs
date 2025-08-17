@@ -1,28 +1,29 @@
+---
 name: Download Documentation
 
 on:
   schedule:
     # Run every 24 hours at 00:00 UTC
     - cron: '0 0 * * *'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch:  # Allow manual triggering
 
 jobs:
   download-docs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Process documentation sources
         run: |
           #!/bin/bash
           set -e
-          
+
           # Function to validate URL
           validate_url() {
             local url="$1"
@@ -32,24 +33,25 @@ jobs:
               return 1
             fi
           }
-          
+
           # Function to download and save content
           download_content() {
             local name="$1"
             local url="$2"
-            
+
             echo "Processing: $name -> $url"
-            
+
             # Validate URL format
             if ! validate_url "$url"; then
               echo "ERROR: Invalid URL format: $url"
               return 1
             fi
-            
+
             # Make HTTP request and capture both status and content
             temp_file=$(mktemp)
-            status=$(curl -s -w "%{http_code}" -o "$temp_file" "$url" 2>/dev/null || echo "000")
-            
+            status=$(curl -s -w "%{http_code}" -o "$temp_file" "$url" 2>/dev/null || \
+              echo "000")
+
             if [ "$status" = "200" ]; then
               echo "SUCCESS: Downloaded content from $url (HTTP $status)"
               cp "$temp_file" "${name}.md"
@@ -62,39 +64,39 @@ jobs:
               return 1
             fi
           }
-          
+
           # Check if docs.csv exists
           if [ ! -f "docs.csv" ]; then
             echo "ERROR: docs.csv not found in repository root"
             exit 1
           fi
-          
+
           # Process each line in docs.csv
           while IFS=',' read -r name url || [ -n "$name" ]; do
             # Skip empty lines
             if [ -z "$name" ] || [ -z "$url" ]; then
               continue
             fi
-            
+
             # Trim whitespace
             name=$(echo "$name" | xargs)
             url=$(echo "$url" | xargs)
-            
+
             # Process the entry, but don't stop on errors
             if ! download_content "$name" "$url"; then
               echo "Continuing with next entry..."
             fi
-            
+
           done < docs.csv
-          
+
       - name: Commit and push changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          
+
           # Add all markdown files
           git add *.md
-          
+
           # Check if there are changes to commit
           if git diff --staged --quiet; then
             echo "No changes to commit"
