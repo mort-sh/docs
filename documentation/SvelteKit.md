@@ -2480,17 +2480,25 @@ Remote functions are a tool for type-safe communication between client and serve
 
 Combined with Svelte's experimental support for [`await`](/docs/svelte/await-expressions), it allows you to load and manipulate data directly inside your components.
 
-This feature is currently experimental, meaning it is likely to contain bugs and is subject to change without notice. You must opt in by adding the `kit.experimental.remoteFunctions` option in your `svelte.config.js`:
+This feature is currently experimental, meaning it is likely to contain bugs and is subject to change without notice. You must opt in by adding the `kit.experimental.remoteFunctions` option in your `svelte.config.js` and optionally, the `compilerOptions.experimental.async` option to use `await` in components:
 
 ```js
 /// file: svelte.config.js
-export default {
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
 	kit: {
 		experimental: {
 			+++remoteFunctions: true+++
 		}
+	},
+	compilerOptions: {
+		experimental: {
+			+++async: true+++
+		}
 	}
 };
+
+export default config;
 ```
 
 ## Overview
@@ -2556,6 +2564,8 @@ While using `await` is recommended, as an alternative the query also has `loadin
 
 	const query = getPosts();
 </script>
+
+<h1>Recent posts</h1>
 
 {#if query.error}
 	<p>oops!</p>
@@ -4395,29 +4405,20 @@ export default config;
 
 To control how your routes are deployed to Vercel as functions, you can specify deployment configuration, either through the option shown above or with [`export const config`](page-options#config) inside `+server.js`, `+page(.server).js` and `+layout(.server).js` files.
 
-For example you could deploy some parts of your app as [Edge Functions](https://vercel.com/docs/concepts/functions/edge-functions)...
+For example you could deploy one specific route as an individual serverless function, separate from the rest of your app:
 
 ```js
 /// file: about/+page.js
 /** @type {import('@sveltejs/adapter-vercel').Config} */
 export const config = {
-	runtime: 'edge'
-};
-```
-
-...and others as [Serverless Functions](https://vercel.com/docs/concepts/functions/serverless-functions) (note that by specifying `config` inside a layout, it applies to all child pages):
-
-```js
-/// file: admin/+layout.js
-/** @type {import('@sveltejs/adapter-vercel').Config} */
-export const config = {
-	runtime: 'nodejs22.x'
+	split: true
 };
 ```
 
 The following options apply to all functions:
 
 - `runtime`: `'edge'`, `'nodejs18.x'`, `'nodejs20.x'` or `'nodejs22.x'`. By default, the adapter will select the `'nodejs<version>.x'` corresponding to the Node version your project is configured to use on the Vercel dashboard
+  > [!NOTE] This option is deprecated and will be removed in a future version, at which point all your functions will use whichever Node version is specified in the project configuration on Vercel
 - `regions`: an array of [edge network regions](https://vercel.com/docs/concepts/edge-network/regions) (defaulting to `["iad1"]` for serverless functions) or `'all'` if `runtime` is `edge` (its default). Note that multiple regions for serverless functions are only supported on Enterprise plans
 - `split`: if `true`, causes a route to be deployed as an individual function. If `split` is set to `true` at the adapter level, all routes will be deployed as individual functions
 
@@ -4428,6 +4429,8 @@ And the following option apply to serverless functions:
 - `memory`: the amount of memory available to the function. Defaults to `1024` Mb, and can be decreased to `128` Mb or [increased](https://vercel.com/docs/concepts/limits/overview#serverless-function-memory) in 64Mb increments up to `3008` Mb on Pro or Enterprise accounts
 - `maxDuration`: [maximum execution duration](https://vercel.com/docs/functions/runtimes#max-duration) of the function. Defaults to `10` seconds for Hobby accounts, `15` for Pro and `900` for Enterprise
 - `isr`: configuration Incremental Static Regeneration, described below
+
+Configuration set in a layout applies to all the routes beneath that layout, unless overridden at a more granular level.
 
 If your functions need to access data in a specific region, it's recommended that they be deployed in the same region (or close to it) for optimal performance.
 
@@ -4460,7 +4463,7 @@ export default config;
 
 Vercel supports [Incremental Static Regeneration](https://vercel.com/docs/incremental-static-regeneration) (ISR), which provides the performance and cost advantages of prerendered content with the flexibility of dynamically rendered content.
 
-> Use ISR only on routes where every visitor should see the same content (much like when you prerender). If there's anything user-specific happening (like session cookies), they should happen on the client via JavaScript only to not leak sensitive information across visits
+> [!NOTE] Use ISR only on routes where every visitor should see the same content (much like when you prerender). If there's anything user-specific happening (like session cookies), they should happen on the client via JavaScript only to not leak sensitive information across visits
 
 To add ISR to a route, include the `isr` property in your `config` object:
 
@@ -4477,7 +4480,7 @@ export const config = {
 };
 ```
 
-> Using ISR on a route with `export const prerender = true` will have no effect, since the route is prerendered at build time
+> [!NOTE] Using ISR on a route with `export const prerender = true` will have no effect, since the route is prerendered at build time
 
 The `expiration` property is required; all others are optional. The properties are discussed in more detail below.
 
@@ -4509,7 +4512,7 @@ vercel env pull .env.development.local
 
 A list of valid query parameters that contribute to the cache key. Other parameters (such as utm tracking codes) will be ignored, ensuring that they do not result in content being re-generated unnecessarily. By default, query parameters are ignored.
 
-> Pages that are  [prerendered](page-options#prerender) will ignore ISR configuration.
+> [!NOTE] Pages that are  [prerendered](page-options#prerender) will ignore ISR configuration.
 
 ## Environment variables
 
@@ -5609,9 +5612,8 @@ The following example caches the built app and any files in `static` eagerly, an
 
 import { build, files, version } from '$service-worker';
 
-// The reassignment of `self` to `sw` allows you to type cast it in the process
-// (this is the easiest way to do it without needing additional files)
-const sw = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (self));
+// This gives `self` the correct types
+const self = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (globalThis.self));
 
 // Create a unique cache name for this deployment
 const CACHE = `cache-${version}`;
@@ -5621,7 +5623,7 @@ const ASSETS = [
 	...files  // everything in `static`
 ];
 
-sw.addEventListener('install', (event) => {
+self.addEventListener('install', (event) => {
 	// Create a new cache and add all files to it
 	async function addFilesToCache() {
 		const cache = await caches.open(CACHE);
@@ -5631,7 +5633,7 @@ sw.addEventListener('install', (event) => {
 	event.waitUntil(addFilesToCache());
 });
 
-sw.addEventListener('activate', (event) => {
+self.addEventListener('activate', (event) => {
 	// Remove previous cached data from disk
 	async function deleteOldCaches() {
 		for (const key of await caches.keys()) {
@@ -5642,7 +5644,7 @@ sw.addEventListener('activate', (event) => {
 	event.waitUntil(deleteOldCaches());
 });
 
-sw.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', (event) => {
 	// ignore POST requests etc
 	if (event.request.method !== 'GET') return;
 
@@ -5763,15 +5765,18 @@ export const add = (a, b) => a + b;
 ...SvelteKit will error:
 
 ```
-Cannot import $lib/server/secrets.js into public-facing code:
-- src/routes/+page.svelte
-	- src/routes/utils.js
-		- $lib/server/secrets.js
+Cannot import $lib/server/secrets.ts into code that runs in the browser, as this could leak sensitive information.
+
+ src/routes/+page.svelte imports
+  src/routes/utils.js imports
+   $lib/server/secrets.ts
+
+If you're only using the import as a type, change it to `import type`.
 ```
 
 Even though the public-facing code — `src/routes/+page.svelte` — only uses the `add` export and not the secret `atlantisCoordinates` export, the secret code could end up in JavaScript that the browser downloads, and so the import chain is considered unsafe.
 
-This feature also works with dynamic imports, even interpolated ones like ``await import(`./${foo}.js`)``, with one small caveat: during development, if there are two or more dynamic imports between the public-facing code and the server-only module, the illegal import will not be detected the first time the code is loaded.
+This feature also works with dynamic imports, even interpolated ones like ``await import(`./${foo}.js`)``.
 
 > [!NOTE] Unit testing frameworks like Vitest do not distinguish between server-only and public-facing code. For this reason, illegal import detection is disabled when running tests, as determined by `process.env.TEST === 'true'`.
 
@@ -5921,38 +5926,39 @@ Shallow routing is a feature that requires JavaScript to work. Be mindful when u
 	<p>Available since 2.29</p>
 </blockquote>
 
-> [!NOTE] This feature is experimental. Expect bugs and breaking changes in minor versions (though we'll do our best to keep those to an absolute minimum). Please provide feedback!
-
 Sometimes, you may need to observe how your application is behaving in order to improve performance or find the root cause of a pesky bug. To help with this, SvelteKit can emit server-side [OpenTelemetry](https://opentelemetry.io) spans for the following:
 
-- [`handle`](hooks#Server-hooks-handle) hook (`handle` functions running in a [`sequence`](@sveltejs-kit-hooks#sequence) will show up as children of each other and the root handle hook)
-- [`load`](load) functions (includes universal `load` functions when they're run on the server)
+- The [`handle`](hooks#Server-hooks-handle) hook and `handle` functions running in a [`sequence`](@sveltejs-kit-hooks#sequence) (these will show up as children of each other and the root `handle` hook)
+- Server [`load`](load) functions and universal `load` functions when they're run on the server
 - [Form actions](form-actions)
 - [Remote functions](remote-functions)
 
 Just telling SvelteKit to emit spans won't get you far, though — you need to actually collect them somewhere to be able to view them. SvelteKit provides `src/instrumentation.server.ts` as a place to write your tracing setup and instrumentation code. It's guaranteed to be run prior to your application code being imported, providing your deployment platform supports it and your adapter is aware of it.
 
-To enable both of these features, add the following to your `svelte.config.js`:
+Both of these features are currently experimental, meaning they are likely to contain bugs and are subject to change without notice. You must opt in by adding the `kit.experimental.tracing.server` and `kit.experimental.instrumentation.server` option in your `svelte.config.js`:
 
 ```js
 /// file: svelte.config.js
-export default {
+/** @type {import('@sveltejs/kit').Config} */
+const config = {
 	kit: {
-		+++experimental: {
-			tracing: {
+		experimental: {
+			+++tracing: {
 				server: true
 			},
 			instrumentation: {
 				server: true
-			}
-		}+++
+			}+++
+		}
 	}
 };
+
+export default config;
 ```
 
 > [!NOTE] Tracing — and more significantly, observability instrumentation — can have a nontrivial overhead. Before you go all-in on tracing, consider whether or not you really need it, or if it might be more appropriate to turn it on in development and preview environments only.
 
-## Agumenting SvelteKit's builtin tracing
+## Augmenting the built-in tracing
 
 SvelteKit provides access to the `root` span and the `current` span on the request event. The root span is the one associated with your root `handle` function, and the current span could be associated with `handle`, `load`, a form action, or a remote function, depending on the context. You can annotate these spans with any attributes you wish to record:
 
@@ -5980,19 +5986,20 @@ async function authenticate() {
 
 To view your first trace, you'll need to set up a local collector. We'll use [Jaeger](https://www.jaegertracing.io/docs/getting-started/) in this example, as they provide an easy-to-use quickstart command. Once your collector is running locally:
 
-- Turn on the experimental flag mentioned above in your `svelte.config.js` file
-- Use your package manager to install the dependencies you'll need
+- Turn on the experimental flags mentioned earlier in your `svelte.config.js` file
+- Use your package manager to install the dependencies you'll need:
   ```sh
   npm i @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node @opentelemetry/exporter-trace-oltp-proto import-in-the-middle
   ```
-- Create `src/instrumentation.server.ts` with the following:
+- Create `src/instrumentation.server.js` with the following:
 
-```ts
+```js
+/// file: src/instrumentation.server.js
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
 import { createAddHookMessageChannel } from 'import-in-the-middle';
-import { register } from 'module';
+import { register } from 'node:module';
 
 const { registerOptions } = createAddHookMessageChannel();
 register('import-in-the-middle/hook.mjs', import.meta.url, registerOptions);
@@ -6006,7 +6013,11 @@ const sdk = new NodeSDK({
 sdk.start();
 ```
 
-Any server-side requests will now begin generating traces, which you can view in Jaeger's web console at [localhost:16686](http://localhost:16686).
+Now, server-side requests will begin generating traces, which you can view in Jaeger's web console at [localhost:16686](http://localhost:16686).
+
+## `@opentelemetry/api`
+
+SvelteKit uses `@opentelemetry/api` to generate its spans. This is declared as an optional peer dependency so that users not needing traces see no impact on install size or runtime performance. In most cases, if you're configuring your application to collect SvelteKit's spans, you'll end up installing a library like `@opentelemetry/sdk-node` or `@vercel/otel`, which in turn depend on `@opentelemetry/api`, which will satisfy SvelteKit's dependency as well. If you see an error from SvelteKit telling you it can't find `@opentelemetry/api`, it may just be because you haven't set up your trace collection yet. If you _have_ done that and are still seeing the error, you can install `@opentelemetry/api` yourself.
 
 # Packaging
 
@@ -11543,6 +11554,37 @@ type PrerenderOption = boolean | 'auto';
 
 </div>
 
+## PrerenderUnseenRoutesHandler
+
+<div class="ts-block">
+
+```dts
+interface PrerenderUnseenRoutesHandler {/*…*/}
+```
+
+<div class="ts-block-property">
+
+```dts
+(details: { routes: string[]; message: string }): void;
+```
+
+<div class="ts-block-property-details"></div>
+</div></div>
+
+## PrerenderUnseenRoutesHandlerValue
+
+<div class="ts-block">
+
+```dts
+type PrerenderUnseenRoutesHandlerValue =
+	| 'fail'
+	| 'warn'
+	| 'ignore'
+	| PrerenderUnseenRoutesHandler;
+```
+
+</div>
+
 ## Prerendered
 
 <div class="ts-block">
@@ -14280,6 +14322,34 @@ How to respond when an entry generated by the `entries` export doesn't match the
 - `'ignore'` - silently ignore the failure and continue
 - `'warn'` — continue, but print a warning
 - `(details) => void` — a custom error handler that takes a `details` object with `generatedFromId`, `entry`, `matchedId` and `message` properties. If you `throw` from this function, the build will fail
+
+</div>
+</div>
+<div class="ts-block-property">
+
+```ts
+// @noErrors
+handleUnseenRoutes?: PrerenderUnseenRoutesHandlerValue;
+```
+
+<div class="ts-block-property-details">
+
+<div class="ts-block-property-bullets">
+
+- <span class="tag">default</span> `"fail"`
+- <span class="tag since">available since</span> v2.16.0
+
+</div>
+
+How to respond when a route is marked as prerenderable but has not been prerendered.
+
+- `'fail'` — fail the build
+- `'ignore'` - silently ignore the failure and continue
+- `'warn'` — continue, but print a warning
+- `(details) => void` — a custom error handler that takes a `details` object with a `routes` property which contains all routes that haven't been prerendered. If you `throw` from this function, the build will fail
+
+The default behavior is to fail the build. This may be undesirable when you know that some of your routes may never be reached under certain
+circumstances such as a CMS not returning data for a specific area, resulting in certain routes never being reached.
 
 </div>
 </div>
