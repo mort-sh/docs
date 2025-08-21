@@ -4080,7 +4080,7 @@ export default config;
 /// file: wrangler.toml
 ---site.bucket = ".cloudflare/public"---
 +++assets.directory = ".cloudflare/public"
-assets.binding = "ASSETS"+++
+assets.binding = "ASSETS" # Exclude this if you don't have a `main` key configured.+++
 ```
 
 ### wrangler.jsonc
@@ -4093,7 +4093,7 @@ assets.binding = "ASSETS"+++
 	},---
 +++	"assets": {
 		"directory": ".cloudflare/public",
-		"binding": "ASSETS"
+		"binding": "ASSETS" // Exclude this if you don't have a `main` key configured.
 	}+++
 }
 ```
@@ -6272,6 +6272,7 @@ You can create so-called declaration maps (`d.ts.map` files) by setting `"declar
 - `-w`/`--watch` — watch files in `src/lib` for changes and rebuild the package
 - `-i`/`--input` — the input directory which contains all the files of the package. Defaults to `src/lib`
 - `-o`/`--output` — the output directory where the processed files are written to. Your `package.json`'s `exports` should point to files inside there, and the `files` array should include that folder. Defaults to `dist`
+- `-p`/`--preserve-output` — prevent deletion of the output directory before packaging. Defaults to `false`, which means that the output directory will be emptied first
 - `-t`/`--types` — whether or not to create type definitions (`d.ts` files). We strongly recommend doing this as it fosters ecosystem library quality. Defaults to `true`
 - `--tsconfig` - the path to a tsconfig or jsconfig. When not provided, searches for the next upper tsconfig/jsconfig in the workspace path.
 
