@@ -6000,7 +6000,7 @@ To view your first trace, you'll need to set up a local collector. We'll use [Ja
 - Turn on the experimental flags mentioned earlier in your `svelte.config.js` file
 - Use your package manager to install the dependencies you'll need:
   ```sh
-  npm i @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node @opentelemetry/exporter-trace-oltp-proto import-in-the-middle
+  npm i @opentelemetry/sdk-node @opentelemetry/auto-instrumentations-node @opentelemetry/exporter-trace-otlp-proto import-in-the-middle
   ```
 - Create `src/instrumentation.server.js` with the following:
 
@@ -13491,6 +13491,30 @@ checkOrigin?: boolean;
 Whether to check the incoming `origin` header for `POST`, `PUT`, `PATCH`, or `DELETE` form submissions and verify that it matches the server's origin.
 
 To allow people to make `POST`, `PUT`, `PATCH`, or `DELETE` requests with a `Content-Type` of `application/x-www-form-urlencoded`, `multipart/form-data`, or `text/plain` to your app from other origins, you will need to disable this option. Be careful!
+
+</div>
+</div>
+<div class="ts-block-property">
+
+```ts
+// @noErrors
+trustedOrigins?: string[];
+```
+
+<div class="ts-block-property-details">
+
+<div class="ts-block-property-bullets">
+
+- <span class="tag">default</span> `[]`
+
+</div>
+
+An array of origins that are allowed to make cross-origin form submissions to your app, even when `checkOrigin` is `true`.
+
+Each origin should be a complete origin including protocol (e.g., `https://payment-gateway.com`).
+This is useful for allowing trusted third-party services like payment gateways or authentication providers to submit forms to your app.
+
+**Warning**: Only add origins you completely trust, as this bypasses CSRF protection for those origins.
 
 </div>
 </div>
