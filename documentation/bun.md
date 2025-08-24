@@ -121,6 +121,7 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Globals](https://bun.com/docs/api/globals.md): Bun implements a range of Web APIs, Node.js APIs, and Bun-native APIs that are available in the global scope.
 - [$ Shell](https://bun.com/docs/runtime/shell.md): Bun's cross-platform shell-scripting API makes shell scripting with JavaScript fun
 - [Child processes](https://bun.com/docs/api/spawn.md): Spawn sync and async child processes with easily configurable input and output streams.
+- [YAML](https://bun.com/docs/api/yaml.md): Bun.YAML.parse(string) lets you parse YAML files in JavaScript
 - [HTMLRewriter](https://bun.com/docs/api/html-rewriter.md): Parse and transform HTML with Bun's native HTMLRewriter API, inspired by Cloudflare Workers.
 - [Hashing](https://bun.com/docs/api/hashing.md): Native support for a range of fast hashing algorithms.
 - [Console](https://bun.com/docs/api/console.md): Bun implements a Node.js-compatible `console` object with colorized output and deep pretty-printing.
