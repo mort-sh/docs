@@ -278,6 +278,7 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Import a HTML file as text](https://bun.com/guides/runtime/import-html.md)
 - [Import a JSON file](https://bun.com/guides/runtime/import-json.md)
 - [Import a TOML file](https://bun.com/guides/runtime/import-toml.md)
+- [Import a YAML file](https://bun.com/guides/runtime/import-yaml.md)
 - [Inspect memory usage using V8 heap snapshots](https://bun.com/guides/runtime/heap-snapshot.md)
 - [Install and run Bun in GitHub Actions](https://bun.com/guides/runtime/cicd.md)
 - [Install TypeScript declarations for Bun](https://bun.com/guides/runtime/typescript.md)
