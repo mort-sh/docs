@@ -5934,7 +5934,7 @@ Shallow routing is a feature that requires JavaScript to work. Be mindful when u
 # Observability
 
 <blockquote class="since note">
-	<p>Available since 2.29</p>
+	<p>Available since 2.31</p>
 </blockquote>
 
 Sometimes, you may need to observe how your application is behaving in order to improve performance or find the root cause of a pesky bug. To help with this, SvelteKit can emit server-side [OpenTelemetry](https://opentelemetry.io) spans for the following:
@@ -13190,7 +13190,7 @@ const build: string[];
 
 ## files
 
-An array of URL strings representing the files in your static directory, or whatever directory is specified by `config.kit.files.assets`. You can customize which files are included from `static` directory using [`config.kit.serviceWorker.files`](/docs/kit/configuration)
+An array of URL strings representing the files in your static directory, or whatever directory is specified by `config.kit.files.assets`. You can customize which files are included from `static` directory using [`config.kit.serviceWorker.files`](/docs/kit/configuration#serviceWorker)
 
 <div class="ts-block">
 
