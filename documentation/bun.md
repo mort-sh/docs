@@ -174,6 +174,10 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Convert an ArrayBuffer to a Uint8Array](https://bun.com/guides/binary/arraybuffer-to-typedarray.md)
 - [Convert an ArrayBuffer to an array of numbers](https://bun.com/guides/binary/arraybuffer-to-array.md)
 
+### Guides: Deployment
+
+- [Deploy a Bun application on Railway](https://bun.com/guides/deployment/railway.md): Deploy Bun applications to Railway with this step-by-step guide covering CLI and dashboard methods, optional PostgreSQL setup, and automatic SSL configuration.
+
 ### Guides: Ecosystem
 
 - [Add Sentry to a Bun app](https://bun.com/guides/ecosystem/sentry.md)
