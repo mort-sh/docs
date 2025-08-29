@@ -2632,7 +2632,7 @@ Both the argument and the return value are serialized with [devalue](https://git
 
 ### Refreshing queries
 
-Any query can be updated via its `refresh` method:
+Any query can be re-fetched via its `refresh` method, which retrieves the latest value from the server:
 
 ```svelte
 <button onclick={() => getPosts().refresh()}>
@@ -2640,7 +2640,7 @@ Any query can be updated via its `refresh` method:
 </button>
 ```
 
-> [!NOTE] Queries are cached while they're on the page, meaning `getPosts() === getPosts()`. This means you don't need a reference like `const posts = getPosts()` in order to refresh the query.
+> [!NOTE] Queries are cached while they're on the page, meaning `getPosts() === getPosts()`. This means you don't need a reference like `const posts = getPosts()` in order to update the query.
 
 ## form
 
@@ -2740,6 +2740,9 @@ import * as v from 'valibot';
 import { error, redirect } from '@sveltejs/kit';
 import { query, form } from '$app/server';
 const slug = '';
+const post = { id: '' };
+/** @type {any} */
+const externalApi = '';
 // ---cut---
 export const getPosts = query(async () => { /* ... */ });
 
@@ -2754,6 +2757,15 @@ export const createPost = form(async (data) => {
 
 	// Redirect to the newly created page
 	redirect(303, `/blog/${slug}`);
+});
+
+export const updatePost = form(async (data) => {
+	// form logic goes here...
+	const result = externalApi.update(post);
+
+	// The API already gives us the updated post,
+	// no need to refresh it, we can set it directly
+	+++await getPost(post.id).set(result);+++
 });
 ```
 
@@ -3011,6 +3023,9 @@ export const addLike = command(v.string(), async (id) => {
 	`;
 
 	+++getLikes(id).refresh();+++
+	// Just like within form functions you can also do
+	// getLikes(id).set(...)
+	// in case you have the result already
 });
 ```
 
@@ -9837,6 +9852,13 @@ type RemotePrerenderFunction<Input, Output> = (
 ```dts
 type RemoteQuery<T> = RemoteResource<T> & {
 	/**
+	 * On the client, this function will update the value of the query without re-fetching it.
+	 *
+	 * On the server, this can be called in the context of a `command` or `form` and the specified data will accompany the action response back to the client.
+	 * This prevents SvelteKit needing to refresh all queries on the page in a second server round-trip.
+	 */
+	set(value: T): void;
+	/**
 	 * On the client, this function will re-fetch the query from the server.
 	 *
 	 * On the server, this can be called in the context of a `command` or `form` and the refreshed data will accompany the action response back to the client.
@@ -13517,7 +13539,9 @@ This is useful for allowing trusted third-party services like payment gateways o
 
 If the array contains `'*'`, all origins will be trusted. This is generally not recommended!
 
-**Warning**: Only add origins you completely trust, as this bypasses CSRF protection for those origins.
+> [!NOTE] Only add origins you completely trust, as this bypasses CSRF protection for those origins.
+
+CSRF checks only apply in production, not in local development.
 
 </div>
 </div>
