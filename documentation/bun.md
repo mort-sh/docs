@@ -129,6 +129,7 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Cookie](https://bun.com/docs/api/cookie.md): Bun's native Cookie API simplifies working with HTTP cookies.
 - [FFI](https://bun.com/docs/api/ffi.md): Call native code from JavaScript with Bun's foreign function interface (FFI) API.
 - [C Compiler](https://bun.com/docs/api/cc.md): Build & run native C from JavaScript with Bun's native C compiler API
+- [Secrets](https://bun.com/docs/api/secrets.md): Store and retrieve sensitive credentials securely using the operating system's native credential storage APIs.
 - [Testing](https://bun.com/docs/cli/test.md): Bun's built-in test runner is fast and uses Jest-compatible syntax.
 - [Utils](https://bun.com/docs/api/utils.md): Bun implements a set of utilities that are commonly required by developers.
 - [Node-API](https://bun.com/docs/api/node-api.md): Bun implements the Node-API spec for building native addons.
