@@ -2642,6 +2642,59 @@ Any query can be re-fetched via its `refresh` method, which retrieves the latest
 
 > [!NOTE] Queries are cached while they're on the page, meaning `getPosts() === getPosts()`. This means you don't need a reference like `const posts = getPosts()` in order to update the query.
 
+## query.batch
+
+`query.batch` works like `query` except that it batches requests that happen within the same macrotask. This solves the so-called n+1 problem: rather than each query resulting in a separate database call (for example), simultaneous queries are grouped together.
+
+On the server, the callback receives an array of the arguments the function was called with. It must return a function of the form `(input: Input, index: number) => Output`. SvelteKit will then call this with each of the input arguments to resolve the individual calls with their results.
+
+```js
+/// file: weather.remote.js
+// @filename: ambient.d.ts
+declare module '$lib/server/database' {
+	export function sql(strings: TemplateStringsArray, ...values: any[]): Promise<any[]>;
+}
+// @filename: index.js
+// ---cut---
+import * as v from 'valibot';
+import { query } from '$app/server';
+import * as db from '$lib/server/database';
+
+export const getWeather = query.batch(v.string(), async (cities) => {
+	const weather = await db.sql`
+		SELECT * FROM weather
+		WHERE city = ANY(${cities})
+	`;
+	const lookup = new Map(weather.map(w => [w.city, w]));
+
+	return (city) => lookup.get(city);
+});
+```
+
+```svelte
+<!--- file: Weather.svelte --->
+<script>
+	import CityWeather from './CityWeather.svelte';
+	import { getWeather } from './weather.remote.js';
+
+	let { cities } = $props();
+	let limit = $state(5);
+</script>
+
+<h2>Weather</h2>
+
+{#each cities.slice(0, limit) as city}
+	<h3>{city.name}</h3>
+	<CityWeather weather={await getWeather(city.id)} />
+{/each}
+
+{#if cities.length > limit}
+	<button onclick={() => limit += 5}>
+		Load more
+	</button>
+{/if}
+```
+
 ## form
 
 The `form` function makes it easy to write data to the server. It takes a callback that receives the current [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)...
@@ -4317,7 +4370,7 @@ New projects will use the current Node LTS version by default. However, if you'r
 
 ## Netlify Edge Functions
 
-SvelteKit supports [Netlify Edge Functions](https://docs.netlify.com/netlify-labs/experimental-features/edge-functions/). If you pass the option `edge: true` to the `adapter` function, server-side rendering will happen in a Deno-based edge function that's deployed close to the site visitor. If set to `false` (the default), the site will deploy to Node-based Netlify Functions.
+SvelteKit supports [Netlify Edge Functions](https://docs.netlify.com/build/edge-functions/overview/). If you pass the option `edge: true` to the `adapter` function, server-side rendering will happen in a Deno-based edge function that's deployed close to the site visitor. If set to `false` (the default), the site will deploy to Node-based Netlify Functions.
 
 ```js
 /// file: svelte.config.js
@@ -12803,6 +12856,53 @@ const text = await asset.text();
 
 ```dts
 function read(asset: string): Response;
+```
+
+</div>
+
+
+
+## query
+
+<div class="ts-block">
+
+```dts
+namespace query {
+	/**
+	 * Creates a batch query function that collects multiple calls and executes them in a single request
+	 *
+	 * See [Remote functions](https://svelte.dev/docs/kit/remote-functions#query.batch) for full documentation.
+	 *
+	 * @since 2.35
+	 */
+	function batch<Input, Output>(
+		validate: 'unchecked',
+		fn: (
+			args: Input[]
+		) => MaybePromise<(arg: Input, idx: number) => Output>
+	): RemoteQueryFunction<Input, Output>;
+	/**
+	 * Creates a batch query function that collects multiple calls and executes them in a single request
+	 *
+	 * See [Remote functions](https://svelte.dev/docs/kit/remote-functions#query.batch) for full documentation.
+	 *
+	 * @since 2.35
+	 */
+	function batch<Schema extends StandardSchemaV1, Output>(
+		schema: Schema,
+		fn: (
+			args: StandardSchemaV1.InferOutput<Schema>[]
+		) => MaybePromise<
+			(
+				arg: StandardSchemaV1.InferOutput<Schema>,
+				idx: number
+			) => Output
+		>
+	): RemoteQueryFunction<
+		StandardSchemaV1.InferInput<Schema>,
+		Output
+	>;
+}
 ```
 
 </div>
