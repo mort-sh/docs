@@ -3342,7 +3342,7 @@ let b = $derived(await two());
 
 To render placeholder UI, you can wrap content in a `<svelte:boundary>` with a [`pending`](svelte-boundary#Properties-pending) snippet. This will be shown when the boundary is first created, but not for subsequent updates, which are globally coordinated.
 
-After the contents of a boundary have resolved for the first time and replaced the `pending` snippet, you can detect subsequent async work with [`$effect.pending()`]($effect#$effect.pending). This is what you would use display a "we're asynchronously validating your input" spinner next to a form field, for example.
+After the contents of a boundary have resolved for the first time and have replaced the `pending` snippet, you can detect subsequent async work with [`$effect.pending()`]($effect#$effect.pending). This is what you would use to display a "we're asynchronously validating your input" spinner next to a form field, for example.
 
 You can also use [`settled()`](svelte#settled) to get a promise that resolves when the current update is complete:
 
@@ -12346,7 +12346,7 @@ We can also implement progressive enhancement ourselves, without `use:enhance`, 
 	/** @param {SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}} event */
 	async function handleSubmit(event) {
 		event.preventDefault();
-		const data = new FormData(event.currentTarget);
+		const data = new FormData(event.currentTarget, event.submitter);
 
 		const response = await fetch(event.currentTarget.action, {
 			method: 'POST',
@@ -13251,7 +13251,7 @@ For client-side validation, you can specify a _preflight_ schema which will popu
 
 	const schema = v.object({
 		title: v.pipe(v.string(), v.nonEmpty()),
-		content:v.pipe(v.string(), v.nonEmpty())
+		content: v.pipe(v.string(), v.nonEmpty())
 	});
 </script>
 
@@ -18104,6 +18104,8 @@ type RemoteForm<
 	/** Validate the form contents programmatically */
 	validate(options?: {
 		includeUntouched?: boolean;
+		/** Perform validation as if the form was submitted by the given button. */
+		submitter?: HTMLButtonElement | HTMLInputElement;
 	}): Promise<void>;
 	/** The result of the form submission */
 	get result(): Output | undefined;

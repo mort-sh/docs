@@ -1983,7 +1983,7 @@ We can also implement progressive enhancement ourselves, without `use:enhance`, 
 	/** @param {SubmitEvent & { currentTarget: EventTarget & HTMLFormElement}} event */
 	async function handleSubmit(event) {
 		event.preventDefault();
-		const data = new FormData(event.currentTarget);
+		const data = new FormData(event.currentTarget, event.submitter);
 
 		const response = await fetch(event.currentTarget.action, {
 			method: 'POST',
@@ -2898,7 +2898,7 @@ For client-side validation, you can specify a _preflight_ schema which will popu
 
 	const schema = v.object({
 		title: v.pipe(v.string(), v.nonEmpty()),
-		content:v.pipe(v.string(), v.nonEmpty())
+		content: v.pipe(v.string(), v.nonEmpty())
 	});
 </script>
 
@@ -10250,6 +10250,8 @@ type RemoteForm<
 	/** Validate the form contents programmatically */
 	validate(options?: {
 		includeUntouched?: boolean;
+		/** Perform validation as if the form was submitted by the given button. */
+		submitter?: HTMLButtonElement | HTMLInputElement;
 	}): Promise<void>;
 	/** The result of the form submission */
 	get result(): Output | undefined;
