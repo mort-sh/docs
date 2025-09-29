@@ -3396,8 +3396,6 @@ If a `<svelte:boundary>` with a `pending` snippet is encountered during SSR, tha
 
 As an experimental feature, the details of how `await` is handled (and related APIs like `$effect.pending()`) are subject to breaking changes outside of a semver major release, though we intend to keep such changes to a bare minimum.
 
-Currently, server-side rendering is synchronous. If a `<svelte:boundary>` with a `pending` snippet is encountered during SSR, only the `pending` snippet will be rendered.
-
 ## Breaking changes
 
 Effects run in a slightly different order when the `experimental.async` option is `true`. Specifically, _block_ effects like `{#if ...}` and `{#each ...}` now run before an `$effect.pre` or `beforeUpdate` in the same component, which means that in [very rare situations](/REMOVED) it is possible to update a block that should no longer exist, but only if you update state inside an effect, [which you should avoid]($effect#When-not-to-use-$effect).
