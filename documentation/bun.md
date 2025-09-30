@@ -6,11 +6,11 @@ This documentation covers all aspects of using Bun, from installation to advance
 
 ## Recent Bun Versions
 
+- [Bun v1.2.23](https://bun.com/blog/bun-v1.2.23.md): pnpm-lock.yaml migration for seamless switching from pnpm to bun install, Redis Pub/Sub support, concurrent test execution with configurable parallelism, platform-specific dependency filtering with --cpu and --os flags, system CA certificates support with --use-system-ca, Windows code signing for compiled executables, JSX configuration improvements in Bun.build, sql.array helper for parameterized arrays, randomized test ordering, stricter CI test defaults, process.report.getReport() on Windows, and numerous Node.js compatibility improvements including http, dns, worker_threads, crypto, http2, net, and tty modules.
 - [Bun v1.2.22](https://bun.com/blog/bun-v1.2.22.md): Async stack traces for better debugging, RFC 6455 compliant WebSocket client subprotocol negotiation, MySQL adapter improvements including affectedRows and lastInsertRowid support, JSX side effects preservation during bundling, event loop delay monitoring with perf_hooks, HTTP server idle connection management, --workspaces in bun run, function name removal during minification, and numerous Node.js compatibility fixes including child_process.spawnSync, socket.write with Uint8Array, crypto.verify RSA defaults, N-API improvements, HTMLRewriter error handling, fetch decompression fixes, Bun.SQL, and Bun.$ improvements.
 - [Bun v1.2.21](https://bun.com/blog/bun-v1.2.21.md): Bun.SQL now supports MySQL and SQLite, alongside PostgreSQL. Native YAML support. 500x faster postMessage(string). Bun.build() compile API, with cross-platform targets. Reduced idle CPU usage. Bun.stripANSI for SIMD-accelerated ANSI escape removal. bunx --package flag support. customizable User-Agent headers. Windows executable metadata embedding. and extensive Node.js compatibility improvements
 - [Bun v1.2.20](https://bun.com/blog/bun-v1.2.20.md): Reduced idle CPU usage. Improved `bun:test` diffing. Automatic `ETag` and `If-None-Match` in static routes for `Bun.serve`. 40x faster `AbortSignal.timeout`. Windows long path support. `WebAssembly.compileStreaming` and `WebAssembly.instantiateStreaming`. Many, many reliability improvements.
 - [Bun v1.2.19](https://bun.com/blog/bun-v1.2.19.md): 043 👍). Introduces `bun install --linker=isolated` for pnpm-style isolated node_modules, `bun why` for dependency tree understanding, `bun pm pkg` commands for package.json management, enhanced `node:fs.glob()` with array patterns and exclude options, `node:module.SourceMap` class and `findSourceMap()`, smarter `@types/bun` with automatic Node.js compatibility detection, plus numerous Node.js compatibility improvements, runtime bugfixes, bundler enhancements, and bun install optimizations.
-- [Bun v1.2.18](https://bun.com/blog/bun-v1.2.18.md): ReadableStream text(), json(), bytes(), blob(), WebSocket client compression with `permessage-deflate`, `bun pm version`, reduced memory usage for large `fetch()` and `S3` uploads, faster `napi_create_buffer`, faster sliced string handling in native addons, `fs.glob` now matches directories by default, `net.createConnection()` now validates `options.host`, `http.ClientRequest#flushHeaders` now correctly sends the request body, `net.connect` `keepAlive` and `keepAliveInitialDelay` options are now correctly handled, `fs.watchFile` emits `stop` on next tick, `net.Server` handles promise rejections in connection listeners, `net.connect` throws `ERR_INVALID_IP_ADDRESS` for non-string lookup results, `fs.watchFile` now ignores access time, `bun:sqlite` updated to SQLite 3.50.2, Bun now reports as Node.js v24.3.0, `bun test` now fails when no tests match a filter, `bun install` is faster for packages using `node-gyp`, `Math.sumPrecise` is now available, Node.js compatibility improvements.
 
 ## Documentation Sections
 
@@ -154,6 +154,35 @@ This documentation covers all aspects of using Bun, from installation to advance
 
 ## Guides
 
+### Guides: Binary data
+
+- [Convert a Blob to a DataView](https://bun.com/guides/binary/blob-to-dataview.md)
+- [Convert a Blob to a ReadableStream](https://bun.com/guides/binary/blob-to-stream.md)
+- [Convert a Blob to a string](https://bun.com/guides/binary/blob-to-string.md)
+- [Convert a Blob to a Uint8Array](https://bun.com/guides/binary/blob-to-typedarray.md)
+- [Convert a Blob to an ArrayBuffer](https://bun.com/guides/binary/blob-to-arraybuffer.md)
+- [Convert a Buffer to a blob](https://bun.com/guides/binary/buffer-to-blob.md)
+- [Convert a Buffer to a ReadableStream](https://bun.com/guides/binary/buffer-to-readablestream.md)
+- [Convert a Buffer to a string](https://bun.com/guides/binary/buffer-to-string.md)
+- [Convert a Buffer to a Uint8Array](https://bun.com/guides/binary/buffer-to-typedarray.md)
+- [Convert a Buffer to an ArrayBuffer](https://bun.com/guides/binary/buffer-to-arraybuffer.md)
+- [Convert a DataView to a string](https://bun.com/guides/binary/dataview-to-string.md)
+- [Convert a Uint8Array to a Blob](https://bun.com/guides/binary/typedarray-to-blob.md)
+- [Convert a Uint8Array to a Buffer](https://bun.com/guides/binary/typedarray-to-buffer.md)
+- [Convert a Uint8Array to a DataView](https://bun.com/guides/binary/typedarray-to-dataview.md)
+- [Convert a Uint8Array to a ReadableStream](https://bun.com/guides/binary/typedarray-to-readablestream.md)
+- [Convert a Uint8Array to a string](https://bun.com/guides/binary/typedarray-to-string.md)
+- [Convert a Uint8Array to an ArrayBuffer](https://bun.com/guides/binary/typedarray-to-arraybuffer.md)
+- [Convert an ArrayBuffer to a Blob](https://bun.com/guides/binary/arraybuffer-to-blob.md)
+- [Convert an ArrayBuffer to a Buffer](https://bun.com/guides/binary/arraybuffer-to-buffer.md)
+- [Convert an ArrayBuffer to a string](https://bun.com/guides/binary/arraybuffer-to-string.md)
+- [Convert an ArrayBuffer to a Uint8Array](https://bun.com/guides/binary/arraybuffer-to-typedarray.md)
+- [Convert an ArrayBuffer to an array of numbers](https://bun.com/guides/binary/arraybuffer-to-array.md)
+
+### Guides: Deployment
+
+- [Deploy a Bun application on Railway](https://bun.com/guides/deployment/railway.md): Deploy Bun applications to Railway with this step-by-step guide covering CLI and dashboard methods, optional PostgreSQL setup, and automatic SSL configuration.
+
 ### Guides: Ecosystem
 
 - [Add Sentry to a Bun app](https://bun.com/guides/ecosystem/sentry.md)
@@ -183,12 +212,25 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Use Neon's Serverless Postgres with Bun](https://bun.com/guides/ecosystem/neon-serverless-postgres.md)
 - [Use Prisma with Bun](https://bun.com/guides/ecosystem/prisma.md)
 
-### Guides: WebSocket
+### Guides: HTMLRewriter
 
-- [Build a publish-subscribe WebSocket server](https://bun.com/guides/websocket/pubsub.md)
-- [Build a simple WebSocket server](https://bun.com/guides/websocket/simple.md)
-- [Enable compression for WebSocket messages](https://bun.com/guides/websocket/compression.md)
-- [Set per-socket contextual data on a WebSocket](https://bun.com/guides/websocket/context.md)
+- [Extract links from a webpage using HTMLRewriter](https://bun.com/guides/html-rewriter/extract-links.md)
+- [Extract social share images and Open Graph tags](https://bun.com/guides/html-rewriter/extract-social-meta.md)
+
+### Guides: HTTP
+
+- [Common HTTP server usage](https://bun.com/guides/http/server.md)
+- [Configure TLS on an HTTP server](https://bun.com/guides/http/tls.md)
+- [fetch with unix domain sockets in Bun](https://bun.com/guides/http/fetch-unix.md)
+- [Hot reload an HTTP server](https://bun.com/guides/http/hot.md)
+- [Proxy HTTP requests using fetch()](https://bun.com/guides/http/proxy.md)
+- [Send an HTTP request using fetch](https://bun.com/guides/http/fetch.md)
+- [Start a cluster of HTTP servers](https://bun.com/guides/http/cluster.md): Run multiple HTTP servers concurrently via the "reusePort" option to share the same port across multiple processes
+- [Stream a file as an HTTP Response](https://bun.com/guides/http/stream-file.md)
+- [Streaming HTTP Server with Async Iterators](https://bun.com/guides/http/stream-iterator.md)
+- [Streaming HTTP Server with Node.js Streams](https://bun.com/guides/http/stream-node-streams-in-bun.md)
+- [Upload files via HTTP using FormData](https://bun.com/guides/http/file-uploads.md)
+- [Write a simple HTTP server](https://bun.com/guides/http/simple.md)
 
 ### Guides: Package manager
 
@@ -209,6 +251,67 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Override the default npm registry for bun install](https://bun.com/guides/install/custom-registry.md)
 - [Using bun install with an Azure Artifacts npm registry](https://bun.com/guides/install/azure-artifacts.md)
 - [Using bun install with Artifactory](https://bun.com/guides/install/jfrog-artifactory.md)
+
+### Guides: Processes
+
+- [Get the process uptime in nanoseconds](https://bun.com/guides/process/nanoseconds.md)
+- [Listen for CTRL+C](https://bun.com/guides/process/ctrl-c.md)
+- [Listen to OS signals](https://bun.com/guides/process/os-signals.md)
+- [Parse command-line arguments](https://bun.com/guides/process/argv.md)
+- [Read from stdin](https://bun.com/guides/process/stdin.md)
+- [Read stderr from a child process](https://bun.com/guides/process/spawn-stderr.md)
+- [Read stdout from a child process](https://bun.com/guides/process/spawn-stdout.md)
+- [Spawn a child process](https://bun.com/guides/process/spawn.md)
+- [Spawn a child process and communicate using IPC](https://bun.com/guides/process/ipc.md)
+
+### Guides: Reading files
+
+- [Check if a file exists](https://bun.com/guides/read-file/exists.md)
+- [Get the MIME type of a file](https://bun.com/guides/read-file/mime.md)
+- [Read a file as a ReadableStream](https://bun.com/guides/read-file/stream.md)
+- [Read a file as a string](https://bun.com/guides/read-file/string.md)
+- [Read a file to a Buffer](https://bun.com/guides/read-file/buffer.md)
+- [Read a file to a Uint8Array](https://bun.com/guides/read-file/uint8array.md)
+- [Read a file to an ArrayBuffer](https://bun.com/guides/read-file/arraybuffer.md)
+- [Read a JSON file](https://bun.com/guides/read-file/json.md)
+- [Watch a directory for changes](https://bun.com/guides/read-file/watch.md)
+
+### Guides: Runtime
+
+- [Build-time constants with --define](https://bun.com/guides/runtime/build-time-constants.md)
+- [Codesign a single-file JavaScript executable on macOS](https://bun.com/guides/runtime/codesign-macos-executable.md): Fix the "can't be opened because it is from an unidentified developer" Gatekeeper warning when running your JavaScript executable.
+- [Debugging Bun with the VS Code extension](https://bun.com/guides/runtime/vscode-debugger.md)
+- [Debugging Bun with the web debugger](https://bun.com/guides/runtime/web-debugger.md)
+- [Define and replace static globals & constants](https://bun.com/guides/runtime/define-constant.md)
+- [Delete directories](https://bun.com/guides/runtime/delete-directory.md)
+- [Delete files](https://bun.com/guides/runtime/delete-file.md)
+- [Import a HTML file as text](https://bun.com/guides/runtime/import-html.md)
+- [Import a JSON file](https://bun.com/guides/runtime/import-json.md)
+- [Import a TOML file](https://bun.com/guides/runtime/import-toml.md)
+- [Import a YAML file](https://bun.com/guides/runtime/import-yaml.md)
+- [Inspect memory usage using V8 heap snapshots](https://bun.com/guides/runtime/heap-snapshot.md)
+- [Install and run Bun in GitHub Actions](https://bun.com/guides/runtime/cicd.md)
+- [Install TypeScript declarations for Bun](https://bun.com/guides/runtime/typescript.md)
+- [Re-map import paths](https://bun.com/guides/runtime/tsconfig-paths.md)
+- [Read environment variables](https://bun.com/guides/runtime/read-env.md)
+- [Run a Shell Command](https://bun.com/guides/runtime/shell.md)
+- [Set a time zone in Bun](https://bun.com/guides/runtime/timezone.md)
+- [Set environment variables](https://bun.com/guides/runtime/set-env.md)
+
+### Guides: Streams
+
+- [Convert a Node.js Readable to a Blob](https://bun.com/guides/streams/node-readable-to-blob.md)
+- [Convert a Node.js Readable to a string](https://bun.com/guides/streams/node-readable-to-string.md)
+- [Convert a Node.js Readable to an ArrayBuffer](https://bun.com/guides/streams/node-readable-to-arraybuffer.md)
+- [Convert a Node.js Readable to an Uint8Array](https://bun.com/guides/streams/node-readable-to-uint8array.md)
+- [Convert a Node.js Readable to JSON](https://bun.com/guides/streams/node-readable-to-json.md)
+- [Convert a ReadableStream to a Blob](https://bun.com/guides/streams/to-blob.md)
+- [Convert a ReadableStream to a Buffer](https://bun.com/guides/streams/to-buffer.md)
+- [Convert a ReadableStream to a string](https://bun.com/guides/streams/to-string.md)
+- [Convert a ReadableStream to a Uint8Array](https://bun.com/guides/streams/to-typedarray.md)
+- [Convert a ReadableStream to an array of chunks](https://bun.com/guides/streams/to-array.md)
+- [Convert a ReadableStream to an ArrayBuffer](https://bun.com/guides/streams/to-arraybuffer.md)
+- [Convert a ReadableStream to JSON](https://bun.com/guides/streams/to-json.md)
 
 ### Guides: Test runner
 
@@ -252,59 +355,12 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Hash a password](https://bun.com/guides/util/hash-a-password.md)
 - [Sleep for a fixed number of milliseconds](https://bun.com/guides/util/sleep.md)
 
-### Guides: Reading files
+### Guides: WebSocket
 
-- [Check if a file exists](https://bun.com/guides/read-file/exists.md)
-- [Get the MIME type of a file](https://bun.com/guides/read-file/mime.md)
-- [Read a file as a ReadableStream](https://bun.com/guides/read-file/stream.md)
-- [Read a file as a string](https://bun.com/guides/read-file/string.md)
-- [Read a file to a Buffer](https://bun.com/guides/read-file/buffer.md)
-- [Read a file to a Uint8Array](https://bun.com/guides/read-file/uint8array.md)
-- [Read a file to an ArrayBuffer](https://bun.com/guides/read-file/arraybuffer.md)
-- [Read a JSON file](https://bun.com/guides/read-file/json.md)
-- [Watch a directory for changes](https://bun.com/guides/read-file/watch.md)
-
-### Guides: HTMLRewriter
-
-- [Extract links from a webpage using HTMLRewriter](https://bun.com/guides/html-rewriter/extract-links.md)
-- [Extract social share images and Open Graph tags](https://bun.com/guides/html-rewriter/extract-social-meta.md)
-
-### Guides: Streams
-
-- [Convert a Node.js Readable to a Blob](https://bun.com/guides/streams/node-readable-to-blob.md)
-- [Convert a Node.js Readable to a string](https://bun.com/guides/streams/node-readable-to-string.md)
-- [Convert a Node.js Readable to an ArrayBuffer](https://bun.com/guides/streams/node-readable-to-arraybuffer.md)
-- [Convert a Node.js Readable to an Uint8Array](https://bun.com/guides/streams/node-readable-to-uint8array.md)
-- [Convert a Node.js Readable to JSON](https://bun.com/guides/streams/node-readable-to-json.md)
-- [Convert a ReadableStream to a Blob](https://bun.com/guides/streams/to-blob.md)
-- [Convert a ReadableStream to a Buffer](https://bun.com/guides/streams/to-buffer.md)
-- [Convert a ReadableStream to a string](https://bun.com/guides/streams/to-string.md)
-- [Convert a ReadableStream to a Uint8Array](https://bun.com/guides/streams/to-typedarray.md)
-- [Convert a ReadableStream to an array of chunks](https://bun.com/guides/streams/to-array.md)
-- [Convert a ReadableStream to an ArrayBuffer](https://bun.com/guides/streams/to-arraybuffer.md)
-- [Convert a ReadableStream to JSON](https://bun.com/guides/streams/to-json.md)
-
-### Guides: Runtime
-
-- [Build-time constants with --define](https://bun.com/guides/runtime/build-time-constants.md)
-- [Codesign a single-file JavaScript executable on macOS](https://bun.com/guides/runtime/codesign-macos-executable.md): Fix the "can't be opened because it is from an unidentified developer" Gatekeeper warning when running your JavaScript executable.
-- [Debugging Bun with the VS Code extension](https://bun.com/guides/runtime/vscode-debugger.md)
-- [Debugging Bun with the web debugger](https://bun.com/guides/runtime/web-debugger.md)
-- [Define and replace static globals & constants](https://bun.com/guides/runtime/define-constant.md)
-- [Delete directories](https://bun.com/guides/runtime/delete-directory.md)
-- [Delete files](https://bun.com/guides/runtime/delete-file.md)
-- [Import a HTML file as text](https://bun.com/guides/runtime/import-html.md)
-- [Import a JSON file](https://bun.com/guides/runtime/import-json.md)
-- [Import a TOML file](https://bun.com/guides/runtime/import-toml.md)
-- [Import a YAML file](https://bun.com/guides/runtime/import-yaml.md)
-- [Inspect memory usage using V8 heap snapshots](https://bun.com/guides/runtime/heap-snapshot.md)
-- [Install and run Bun in GitHub Actions](https://bun.com/guides/runtime/cicd.md)
-- [Install TypeScript declarations for Bun](https://bun.com/guides/runtime/typescript.md)
-- [Re-map import paths](https://bun.com/guides/runtime/tsconfig-paths.md)
-- [Read environment variables](https://bun.com/guides/runtime/read-env.md)
-- [Run a Shell Command](https://bun.com/guides/runtime/shell.md)
-- [Set a time zone in Bun](https://bun.com/guides/runtime/timezone.md)
-- [Set environment variables](https://bun.com/guides/runtime/set-env.md)
+- [Build a publish-subscribe WebSocket server](https://bun.com/guides/websocket/pubsub.md)
+- [Build a simple WebSocket server](https://bun.com/guides/websocket/simple.md)
+- [Enable compression for WebSocket messages](https://bun.com/guides/websocket/compression.md)
+- [Set per-socket contextual data on a WebSocket](https://bun.com/guides/websocket/context.md)
 
 ### Guides: Writing files
 
@@ -319,62 +375,5 @@ This documentation covers all aspects of using Bun, from installation to advance
 - [Write a string to a file](https://bun.com/guides/write-file/basic.md)
 - [Write to stdout](https://bun.com/guides/write-file/stdout.md)
 
-### Guides: HTTP
-
-- [Common HTTP server usage](https://bun.com/guides/http/server.md)
-- [Configure TLS on an HTTP server](https://bun.com/guides/http/tls.md)
-- [fetch with unix domain sockets in Bun](https://bun.com/guides/http/fetch-unix.md)
-- [Hot reload an HTTP server](https://bun.com/guides/http/hot.md)
-- [Proxy HTTP requests using fetch()](https://bun.com/guides/http/proxy.md)
-- [Send an HTTP request using fetch](https://bun.com/guides/http/fetch.md)
-- [Start a cluster of HTTP servers](https://bun.com/guides/http/cluster.md): Run multiple HTTP servers concurrently via the "reusePort" option to share the same port across multiple processes
-- [Stream a file as an HTTP Response](https://bun.com/guides/http/stream-file.md)
-- [Streaming HTTP Server with Async Iterators](https://bun.com/guides/http/stream-iterator.md)
-- [Streaming HTTP Server with Node.js Streams](https://bun.com/guides/http/stream-node-streams-in-bun.md)
-- [Upload files via HTTP using FormData](https://bun.com/guides/http/file-uploads.md)
-- [Write a simple HTTP server](https://bun.com/guides/http/simple.md)
-
-### Guides: Deployment
-
-- [Deploy a Bun application on Railway](https://bun.com/guides/deployment/railway.md): Deploy Bun applications to Railway with this step-by-step guide covering CLI and dashboard methods, optional PostgreSQL setup, and automatic SSL configuration.
-
-### Guides: Binary data
-
-- [Convert a Blob to a DataView](https://bun.com/guides/binary/blob-to-dataview.md)
-- [Convert a Blob to a ReadableStream](https://bun.com/guides/binary/blob-to-stream.md)
-- [Convert a Blob to a string](https://bun.com/guides/binary/blob-to-string.md)
-- [Convert a Blob to a Uint8Array](https://bun.com/guides/binary/blob-to-typedarray.md)
-- [Convert a Blob to an ArrayBuffer](https://bun.com/guides/binary/blob-to-arraybuffer.md)
-- [Convert a Buffer to a blob](https://bun.com/guides/binary/buffer-to-blob.md)
-- [Convert a Buffer to a ReadableStream](https://bun.com/guides/binary/buffer-to-readablestream.md)
-- [Convert a Buffer to a string](https://bun.com/guides/binary/buffer-to-string.md)
-- [Convert a Buffer to a Uint8Array](https://bun.com/guides/binary/buffer-to-typedarray.md)
-- [Convert a Buffer to an ArrayBuffer](https://bun.com/guides/binary/buffer-to-arraybuffer.md)
-- [Convert a DataView to a string](https://bun.com/guides/binary/dataview-to-string.md)
-- [Convert a Uint8Array to a Blob](https://bun.com/guides/binary/typedarray-to-blob.md)
-- [Convert a Uint8Array to a Buffer](https://bun.com/guides/binary/typedarray-to-buffer.md)
-- [Convert a Uint8Array to a DataView](https://bun.com/guides/binary/typedarray-to-dataview.md)
-- [Convert a Uint8Array to a ReadableStream](https://bun.com/guides/binary/typedarray-to-readablestream.md)
-- [Convert a Uint8Array to a string](https://bun.com/guides/binary/typedarray-to-string.md)
-- [Convert a Uint8Array to an ArrayBuffer](https://bun.com/guides/binary/typedarray-to-arraybuffer.md)
-- [Convert an ArrayBuffer to a Blob](https://bun.com/guides/binary/arraybuffer-to-blob.md)
-- [Convert an ArrayBuffer to a Buffer](https://bun.com/guides/binary/arraybuffer-to-buffer.md)
-- [Convert an ArrayBuffer to a string](https://bun.com/guides/binary/arraybuffer-to-string.md)
-- [Convert an ArrayBuffer to a Uint8Array](https://bun.com/guides/binary/arraybuffer-to-typedarray.md)
-- [Convert an ArrayBuffer to an array of numbers](https://bun.com/guides/binary/arraybuffer-to-array.md)
-
-### Guides: Processes
-
-- [Get the process uptime in nanoseconds](https://bun.com/guides/process/nanoseconds.md)
-- [Listen for CTRL+C](https://bun.com/guides/process/ctrl-c.md)
-- [Listen to OS signals](https://bun.com/guides/process/os-signals.md)
-- [Parse command-line arguments](https://bun.com/guides/process/argv.md)
-- [Read from stdin](https://bun.com/guides/process/stdin.md)
-- [Read stderr from a child process](https://bun.com/guides/process/spawn-stderr.md)
-- [Read stdout from a child process](https://bun.com/guides/process/spawn-stdout.md)
-- [Spawn a child process](https://bun.com/guides/process/spawn.md)
-- [Spawn a child process and communicate using IPC](https://bun.com/guides/process/ipc.md)
-
 ---
-
 **Full Content:** [llms-full.txt](https://bun.com/llms-full.txt)
