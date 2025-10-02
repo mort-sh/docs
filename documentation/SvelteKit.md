@@ -13147,7 +13147,7 @@ See [Remote functions](/docs/kit/remote-functions#form) for full documentation.
 
 ```dts
 function form<Output>(
-	fn: () => Output
+	fn: () => MaybePromise<Output>
 ): RemoteForm<void, Output>;
 ```
 

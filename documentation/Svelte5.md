@@ -2442,7 +2442,7 @@ Since 5.6.0, if an `<input>` has a `defaultValue` and is part of a form, it will
 
 ## `<input bind:checked>`
 
-Checkbox and radio inputs can be bound with `bind:checked`:
+Checkbox inputs can be bound with `bind:checked`:
 
 ```svelte
 <label>
@@ -2463,6 +2463,7 @@ Since 5.6.0, if an `<input>` has a `defaultChecked` attribute and is part of a f
 	<input type="reset" value="Reset">
 </form>
 ```
+
 
 ## `<input bind:indeterminate>`
 
@@ -4519,7 +4520,7 @@ As with `mount`, effects will not run during `hydrate` — use `flushSync()` imm
 
 Testing helps you write and maintain your code and guard against regressions. Testing frameworks help you with that, allowing you to describe assertions or expectations about how your code should behave. Svelte is unopinionated about which testing framework you use — you can write unit tests, integration tests, and end-to-end tests using solutions like [Vitest](https://vitest.dev/), [Jasmine](https://jasmine.github.io/), [Cypress](https://www.cypress.io/) and [Playwright](https://playwright.dev/).
 
-## Unit and integration testing using Vitest
+## Unit and component tests with Vitest
 
 Unit tests allow you to test small isolated parts of your code. Integration tests allow you to test parts of your application to see if they work together. If you're using Vite (including via SvelteKit), we recommend using [Vitest](https://vitest.dev/). You can use the Svelte CLI to [setup Vitest](/docs/cli/vitest) either during project creation or later on.
 
@@ -4758,7 +4759,7 @@ test('Component', async () => {
 
 When writing component tests that involve two-way bindings, context or snippet props, it's best to create a wrapper component for your specific test and interact with that. `@testing-library/svelte` contains some [examples](https://testing-library.com/docs/svelte-testing-library/example).
 
-### Component testing with Storybook
+## Component tests with Storybook
 
 [Storybook](https://storybook.js.org) is a tool for developing and documenting UI components, and it can also be used to test your components. They're run with Vitest's browser mode, which renders your components in a real browser for the most realistic testing environment.
 
@@ -4800,7 +4801,7 @@ You can create stories for component variations and test interactions with the [
 />
 ```
 
-## E2E tests using Playwright
+## End-to-end tests with Playwright
 
 E2E (short for 'end to end') tests allow you to test your full application through the eyes of the user. This section uses [Playwright](https://playwright.dev/) as an example, but you can also use other solutions like [Cypress](https://www.cypress.io/) or [NightwatchJS](https://nightwatchjs.org/).
 
@@ -20998,7 +20999,7 @@ See [Remote functions](/docs/kit/remote-functions#form) for full documentation.
 
 ```dts
 function form<Output>(
-	fn: () => Output
+	fn: () => MaybePromise<Output>
 ): RemoteForm<void, Output>;
 ```
 
