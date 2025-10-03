@@ -47,11 +47,11 @@ Don't worry if you don't know Svelte yet! You can ignore all the nice features S
 
 ## Alternatives to SvelteKit
 
-You can also use Svelte directly with Vite by running `npm create vite@latest` and selecting the `svelte` option. With this, `npm run build` will generate HTML, JS, and CSS files inside the `dist` directory using [vite-plugin-svelte](https://github.com/sveltejs/vite-plugin-svelte). In most cases, you will probably need to [choose a routing library](faq#Is-there-a-router) as well.
+You can also use Svelte directly with Vite by running `npm create vite@latest` and selecting the `svelte` option. With this, `npm run build` will generate HTML, JS, and CSS files inside the `dist` directory using [vite-plugin-svelte](https://github.com/sveltejs/vite-plugin-svelte). In most cases, you will probably need to [choose a routing library](/packages#routing) as well.
 
 >[!NOTE] Vite is often used in standalone mode to build [single page apps (SPAs)](../kit/glossary#SPA), which you can also [build with SvelteKit](../kit/single-page-apps).
 
-There are also plugins for [Rollup](https://github.com/sveltejs/rollup-plugin-svelte), [Webpack](https://github.com/sveltejs/svelte-loader) [and a few others](https://sveltesociety.dev/packages?category=build-plugins), but we recommend Vite.
+There are also [plugins for other bundlers](/packages#bundler-plugins), but we recommend Vite.
 
 ## Editor tooling
 
@@ -10477,7 +10477,7 @@ If you are using an external backend, you can simply skip over and ignore the pa
 
 ## Serverless app
 
-SvelteKit apps are simple to run on serverless platforms. [The default zero config adapter](adapter-auto) will automatically run your app on a number of supported platforms or you can use [`adapter-vercel`](adapter-vercel), [`adapter-netlify`](adapter-netlify), or [`adapter-cloudflare`](adapter-cloudflare) to provide platform-specific configuration. And [community adapters](https://sveltesociety.dev/packages?category=sveltekit-adapters) allow you to deploy your application to almost any serverless environment. Some of these adapters such as [`adapter-vercel`](adapter-vercel) and [`adapter-netlify`](adapter-netlify) offer an `edge` option, to support [edge rendering](glossary#Edge) for improved latency.
+SvelteKit apps are simple to run on serverless platforms. [The default zero config adapter](adapter-auto) will automatically run your app on a number of supported platforms or you can use [`adapter-vercel`](adapter-vercel), [`adapter-netlify`](adapter-netlify), or [`adapter-cloudflare`](adapter-cloudflare) to provide platform-specific configuration. And [community adapters](/packages#sveltekit-adapters) allow you to deploy your application to almost any serverless environment. Some of these adapters such as [`adapter-vercel`](adapter-vercel) and [`adapter-netlify`](adapter-netlify) offer an `edge` option, to support [edge rendering](glossary#Edge) for improved latency.
 
 ## Your own server
 
@@ -10507,7 +10507,7 @@ You can turn a [SvelteKit SPA](single-page-apps) into a desktop app with [Tauri]
 
 ## Browser extension
 
-You can build browser extensions using either [`adapter-static`](adapter-static) or [community adapters](https://sveltesociety.dev/packages?category=sveltekit-adapters) specifically tailored towards browser extensions.
+You can build browser extensions using either [`adapter-static`](adapter-static) or [community adapters](/packages#sveltekit-adapters) specifically tailored towards browser extensions.
 
 ## Embedded device
 
@@ -13792,7 +13792,6 @@ export const getStuff = query('unchecked', async ({ id }: { id: string }) => {
 });
 ```
 
-
 ## Using `getRequestEvent`
 
 Inside `query`, `form` and `command` you can use [`getRequestEvent`]($app-server#getRequestEvent) to get the current [`RequestEvent`](@sveltejs-kit#RequestEvent) object. This makes it easy to build abstractions for interacting with cookies, for example:
@@ -13867,7 +13866,7 @@ Official adapters exist for a variety of platforms — these are documented on t
 - [`@sveltejs/adapter-static`](adapter-static) for static site generation (SSG)
 - [`@sveltejs/adapter-vercel`](adapter-vercel) for Vercel
 
-Additional [community-provided adapters](https://sveltesociety.dev/packages?category=sveltekit-adapters) exist for other platforms.
+Additional [community-provided adapters](/packages#sveltekit-adapters) exist for other platforms.
 
 ## Using adapters
 
@@ -15360,7 +15359,7 @@ A great way to use icons is to define them purely via CSS. Iconify offers suppor
 
 ## Svelte
 
-There are many [icon libraries for Svelte](https://www.sveltesociety.dev/packages?category=icons). When choosing an icon library, it is recommended to avoid those that provide a `.svelte` file per icon as these libraries can have thousands of `.svelte` files which really slow down [Vite's dependency optimization](https://vite.dev/guide/dep-pre-bundling.html). This can become especially pathological if the icons are imported both via an umbrella import and subpath import [as described in the `vite-plugin-svelte` FAQ](https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/faq.md#what-is-going-on-with-vite-and-pre-bundling-dependencies).
+There are many [icon libraries for Svelte](/packages#icons). When choosing an icon library, it is recommended to avoid those that provide a `.svelte` file per icon as these libraries can have thousands of `.svelte` files which really slow down [Vite's dependency optimization](https://vite.dev/guide/dep-pre-bundling.html). This can become especially pathological if the icons are imported both via an umbrella import and subpath import [as described in the `vite-plugin-svelte` FAQ](https://github.com/sveltejs/vite-plugin-svelte/blob/main/docs/faq.md#what-is-going-on-with-vite-and-pre-bundling-dependencies).
 
 # Images
 
