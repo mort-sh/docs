@@ -13271,6 +13271,43 @@ Alternatively, you could use `select` and `select multiple`:
 ```
 
 
+### Programmatic validation
+
+In addition to declarative schema validation, you can programmatically mark fields as invalid inside the form handler using the `invalid` function. This is useful for cases where you can't know if something is valid until you try to perform some action:
+
+```js
+/// file: src/routes/shop/data.remote.js
+import * as v from 'valibot';
+import { form } from '$app/server';
+import * as db from '$lib/server/database';
+
+export const buyHotcakes = form(
+	v.object({
+		qty: v.pipe(
+			v.number(),
+			v.minValue(1, 'you must buy at least one hotcake')
+		)
+	}),
+	async (data, invalid) => {
+		try {
+			await db.buy(data.qty);
+		} catch (e) {
+			if (e.code === 'OUT_OF_STOCK') {
+				invalid(
+					invalid.qty(`we don't have enough hotcakes`)
+				);
+			}
+		}
+	}
+);
+```
+
+The `invalid` function works as both a function and a proxy:
+
+- Call `invalid(issue1, issue2, ...issueN)` to throw a validation error
+- If an issue is a `string`, it applies to the form as a whole (and will show up in `fields.allIssues()`)
+- Use `invalid.fieldName(message)` to create an issue for a specific field. Like `fields` this is type-safe and you can use regular property access syntax to create issues for deeply nested objects (e.g. `invalid.profile.email('Email already exists')` or `invalid.items[0].qty('Insufficient stock')`)
+
 ### Validation
 
 If the submitted data doesn't pass the schema, the callback will not run. Instead, each invalid field's `issues()` method will return an array of `{ message: string }` objects, and the `aria-invalid` attribute (returned from `as(...)`) will be set to `true`:
@@ -13573,6 +13610,27 @@ await submit().updates(
 ```
 
 The override will be applied immediately, and released when the submission completes (or fails).
+
+### Multiple instances of a form
+
+Some forms may be repeated as part of a list. In this case you can create separate instances of a form function via `for(id)` to achieve isolation.
+
+```svelte
+<!--- file: src/routes/todos/+page.svelte --->
+<script>
+	import { getTodos, modifyTodo } from '../data.remote';
+</script>
+
+<h1>Todos</h1>
+
+{#each await getTodos() as todo}
+	{@const modify = modifyTodo.for(todo.id)}
+	<form {...modify}>
+		<!-- -->
+		<button disabled={!!modify.pending}>save changes</button>
+	</form>
+{/each}
+```
 
 ### buttonProps
 
@@ -17096,6 +17154,26 @@ The content of the error.
 </div>
 </div></div>
 
+## Invalid
+
+A function and proxy object used to imperatively create validation errors in form handlers.
+
+Call `invalid(issue1, issue2, ...issueN)` to throw a validation error.
+If an issue is a `string`, it applies to the form as a whole (and will show up in `fields.allIssues()`)
+Access properties to create field-specific issues: `invalid.fieldName('message')`.
+The type structure mirrors the input data structure for type-safe field access.
+
+<div class="ts-block">
+
+```dts
+type Invalid<Input = any> = ((
+	...issues: Array<string | StandardSchemaV1.Issue>
+) => never) &
+	InvalidField<Input>;
+```
+
+</div>
+
 ## KitConfig
 
 See the [configuration reference](/docs/kit/configuration) for details.
@@ -18158,8 +18236,8 @@ type RemoteForm<
 		[attachment: symbol]: (node: HTMLFormElement) => void;
 	};
 	/**
-	 * Create an instance of the form for the given key.
-	 * The key is stringified and used for deduplication to potentially reuse existing instances.
+	 * Create an instance of the form for the given `id`.
+	 * The `id` is stringified and used for deduplication to potentially reuse existing instances.
 	 * Useful when you have multiple forms that use the same remote form action, for example in a loop.
 	 * ```svelte
 	 * {#each todos as todo}
@@ -18172,7 +18250,7 @@ type RemoteForm<
 	 * ```
 	 */
 	for(
-		key: string | number | boolean
+		id: ExtractId<Input>
 	): Omit<RemoteForm<Input, Output>, 'for'>;
 	/** Preflight checks */
 	preflight(
@@ -21112,7 +21190,9 @@ See [Remote functions](/docs/kit/remote-functions#form) for full documentation.
 
 ```dts
 function form<Output>(
-	fn: () => MaybePromise<Output>
+	fn: (
+		invalid: import('@sveltejs/kit').Invalid<void>
+	) => MaybePromise<Output>
 ): RemoteForm<void, Output>;
 ```
 
@@ -21123,7 +21203,10 @@ function form<Output>(
 ```dts
 function form<Input extends RemoteFormInput, Output>(
 	validate: 'unchecked',
-	fn: (data: Input) => MaybePromise<Output>
+	fn: (
+		data: Input,
+		invalid: import('@sveltejs/kit').Invalid<Input>
+	) => MaybePromise<Output>
 ): RemoteForm<Input, Output>;
 ```
 
@@ -21141,7 +21224,10 @@ function form<
 >(
 	validate: Schema,
 	fn: (
-		data: StandardSchemaV1.InferOutput<Schema>
+		data: StandardSchemaV1.InferOutput<Schema>,
+		invalid: import('@sveltejs/kit').Invalid<
+			StandardSchemaV1.InferOutput<Schema>
+		>
 	) => MaybePromise<Output>
 ): RemoteForm<StandardSchemaV1.InferInput<Schema>, Output>;
 ```
