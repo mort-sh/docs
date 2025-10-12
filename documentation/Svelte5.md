@@ -2705,6 +2705,7 @@ Components also support `bind:this`, allowing you to interact with component ins
 </script>
 ```
 
+
 ## bind:_property_ for components
 
 ```svelte
