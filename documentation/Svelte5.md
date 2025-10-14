@@ -572,7 +572,7 @@ Derived expressions are recalculated when their dependencies change, but you can
 
 Unlike `$state`, which converts objects and arrays to [deeply reactive proxies]($state#Deep-state), `$derived` values are left as-is. For example, [in a case like this](/REMOVED)...
 
-```svelte
+```js
 let items = $state([...]);
 
 let index = $state(0);
@@ -3598,7 +3598,7 @@ For the boundary to do anything, one or more of the following must be provided.
 
 ### `pending`
 
-As of Svelte 5.36, boundaries with a `pending` snippet can contain [`await`](await-expressions) expressions. This snippet will be shown when the boundary is first created, and will remain visible until all the `await` expressions inside the boundary have resolved ([demo](/REMOVED)):
+This snippet will be shown when the boundary is first created, and will remain visible until all the [`await`](await-expressions) expressions inside the boundary have resolved ([demo](/REMOVED)):
 
 ```svelte
 <svelte:boundary>
