@@ -573,7 +573,8 @@ Derived expressions are recalculated when their dependencies change, but you can
 Unlike `$state`, which converts objects and arrays to [deeply reactive proxies]($state#Deep-state), `$derived` values are left as-is. For example, [in a case like this](/REMOVED)...
 
 ```js
-let items = $state([...]);
+// @errors: 7005
+let items = $state([ /*...*/ ]);
 
 let index = $state(0);
 let selected = $derived(items[index]);
@@ -5126,6 +5127,7 @@ import {
 	SvelteComponentTyped,
 	afterUpdate,
 	beforeUpdate,
+	createContext,
 	createEventDispatcher,
 	createRawSnippet,
 	flushSync,
@@ -5329,6 +5331,20 @@ In runes mode use `$effect.pre` instead.
 
 ```dts
 function beforeUpdate(fn: () => void): void;
+```
+
+</div>
+
+
+
+## createContext
+
+Returns a `[get, set]` pair of functions for working with context in a type-safe way.
+
+<div class="ts-block">
+
+```dts
+function createContext<T>(): [() => T, (context: T) => T];
 ```
 
 </div>
@@ -13963,7 +13979,7 @@ export const getProfile = query(async () => {
 
 // this query could be called from multiple places, but
 // the function will only run once per request
-const getUser = query(() => {
+const getUser = query(async () => {
 	const { cookies } = getRequestEvent();
 
 	return await findUser(cookies.get('session_id'));
