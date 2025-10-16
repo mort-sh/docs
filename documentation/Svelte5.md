@@ -4220,27 +4220,18 @@ Svelte will warn you if you get it wrong.
 
 ## Type-safe context
 
-A useful pattern is to wrap the calls to `setContext` and `getContext` inside helper functions that let you preserve type safety:
+As an alternative to using `setContext` and `getContext` directly, you can use them via `createContext`. This gives you type safety and makes it unnecessary to use a key:
 
-```js
-/// file: context.js
+```ts
+/// file: context.ts
 // @filename: ambient.d.ts
 interface User {}
 
-// @filename: index.js
+// @filename: index.ts
 // ---cut---
-import { getContext, setContext } from 'svelte';
+import { createContext } from 'svelte';
 
-const key = {};
-
-/** @param {User} user */
-export function setUserContext(user) {
-	setContext(key, user);
-}
-
-export function getUserContext() {
-	return /** @type {User} */ (getContext(key));
-}
+export const [getUserContext, setUserContext] = createContext<User>();
 ```
 
 ## Replacing global state
@@ -5339,7 +5330,15 @@ function beforeUpdate(fn: () => void): void;
 
 ## createContext
 
+<blockquote class="since note">
+
+Available since 5.40.0
+
+</blockquote>
+
 Returns a `[get, set]` pair of functions for working with context in a type-safe way.
+
+`get` will throw an error if no parent component called `set`.
 
 <div class="ts-block">
 
@@ -5480,6 +5479,8 @@ function getAllContexts<
 Retrieves the context that belongs to the closest parent component with the specified `key`.
 Must be called during component initialisation.
 
+[`createContext`](/docs/svelte/svelte#createContext) is a type-safe alternative.
+
 <div class="ts-block">
 
 ```dts
@@ -5616,6 +5617,8 @@ and returns that object. The context is then available to children of the compon
 (including slotted content) with `getContext`.
 
 Like lifecycle functions, this must be called during component initialisation.
+
+[`createContext`](/docs/svelte/svelte#createContext) is a type-safe alternative.
 
 <div class="ts-block">
 
