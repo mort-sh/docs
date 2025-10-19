@@ -13377,7 +13377,7 @@ function form<
 	fn: (
 		data: StandardSchemaV1.InferOutput<Schema>,
 		invalid: import('@sveltejs/kit').Invalid<
-			StandardSchemaV1.InferOutput<Schema>
+			StandardSchemaV1.InferInput<Schema>
 		>
 	) => MaybePromise<Output>
 ): RemoteForm<StandardSchemaV1.InferInput<Schema>, Output>;

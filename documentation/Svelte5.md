@@ -323,6 +323,21 @@ To take a static snapshot of a deeply reactive `$state` proxy, use `$state.snaps
 
 This is handy when you want to pass some state to an external library or API that doesn't expect a proxy, such as `structuredClone`.
 
+## `$state.eager`
+
+When state changes, it may not be reflected in the UI immediately if it is used by an `await` expression, because [updates are synchronized](await-expressions#Synchronized-updates).
+
+In some cases, you may want to update the UI as soon as the state changes. For example, you might want to update a navigation bar when the user clicks on a link, so that they get visual feedback while waiting for the new page to load. To do this, use `$state.eager(value)`:
+
+```svelte
+<nav>
+	<a href="/" aria-current={$state.eager(pathname) === '/' ? 'page' : null}>home</a>
+	<a href="/about" aria-current={$state.eager(pathname) === '/about' ? 'page' : null}>about</a>
+</nav>
+```
+
+Use this feature sparingly, and only to provide feedback in response to user action — in general, allowing Svelte to coordinate updates will provide a better user experience.
+
 ## Passing state into functions
 
 JavaScript is a _pass-by-value_ language — when you call a function, the arguments are the _values_ rather than the _variables_. In other words:
@@ -21248,7 +21263,7 @@ function form<
 	fn: (
 		data: StandardSchemaV1.InferOutput<Schema>,
 		invalid: import('@sveltejs/kit').Invalid<
-			StandardSchemaV1.InferOutput<Schema>
+			StandardSchemaV1.InferInput<Schema>
 		>
 	) => MaybePromise<Output>
 ): RemoteForm<StandardSchemaV1.InferInput<Schema>, Output>;
@@ -23741,6 +23756,7 @@ You can select multiple space-separated add-ons from [the list below](#Official-
 - [`drizzle`](drizzle)
 - [`eslint`](eslint)
 - [`lucia`](lucia)
+- [`mcp`](mcp)
 - [`mdsvex`](mdsvex)
 - [`paraglide`](paraglide)
 - [`playwright`](playwright)
@@ -24087,6 +24103,38 @@ Whether to include demo registration and login pages.
 
 ```sh
 npx sv add lucia=demo:yes
+```
+
+# mcp
+
+[Svelte MCP](/docs/mcp/overview) can help your LLM write better Svelte code.
+
+## Usage
+
+```sh
+npx sv add mcp
+```
+
+## What you get
+
+- A good mcp configuration for your project depending on your IDE
+
+## Options
+
+### ide
+
+The IDE you want to use like `'claude-code'`, `'cursor'`, `'gemini'`, `'opencode'`, `'vscode'`, `'other'`.
+
+```sh
+npx sv add mcp=ide:cursor,vscode
+```
+
+### setup
+
+The setup you want to use.
+
+```sh
+npx sv add mcp=setup:local
 ```
 
 # mdsvex
