@@ -1255,6 +1255,8 @@ The `$inspect` rune is roughly equivalent to `console.log`, with the exception t
 <input bind:value={message} />
 ```
 
+On updates, a stack trace will be printed, making it easy to find the origin of a state change (unless you're in the playground, due to technical limitations).
+
 ## $inspect(...).with
 
 `$inspect` returns a property `with`, which you can invoke with a callback, which will then be invoked instead of `console.log`. The first argument to the callback is either `"init"` or `"update"`; subsequent arguments are the values passed to `$inspect` ([demo](/REMOVED)):
@@ -1271,13 +1273,6 @@ The `$inspect` rune is roughly equivalent to `console.log`, with the exception t
 </script>
 
 <button onclick={() => count++}>Increment</button>
-```
-
-A convenient way to find the origin of some change is to pass `console.trace` to `with`:
-
-```js
-// @errors: 2304
-$inspect(stuff).with(console.trace);
 ```
 
 ## $inspect.trace(...)
@@ -18295,7 +18290,10 @@ type RemoteForm<
 	): RemoteForm<Input, Output>;
 	/** Validate the form contents programmatically */
 	validate(options?: {
+		/** Set this to `true` to also show validation issues of fields that haven't been touched yet. */
 		includeUntouched?: boolean;
+		/** Set this to `true` to only run the `preflight` validation. */
+		preflightOnly?: boolean;
 		/** Perform validation as if the form was submitted by the given button. */
 		submitter?: HTMLButtonElement | HTMLInputElement;
 	}): Promise<void>;
@@ -18393,6 +18391,37 @@ type RemoteFormFieldValue =
 	| boolean
 	| File
 	| File[];
+```
+
+</div>
+
+## RemoteFormFields
+
+Recursive type to build form fields structure with proxy access
+
+<div class="ts-block">
+
+```dts
+type RemoteFormFields<T> =
+	WillRecurseIndefinitely<T> extends true
+		? RecursiveFormFields
+		: NonNullable<T> extends
+					| string
+					| number
+					| boolean
+					| File
+			? RemoteFormField<NonNullable<T>>
+			: T extends string[] | File[]
+				? RemoteFormField<T> & {
+						[K in number]: RemoteFormField<T[number]>;
+					}
+				: T extends Array<infer U>
+					? RemoteFormFieldContainer<T> & {
+							[K in number]: RemoteFormFields<U>;
+						}
+					: RemoteFormFieldContainer<T> & {
+							[K in keyof T]-?: RemoteFormFields<T[K]>;
+						};
 ```
 
 </div>
