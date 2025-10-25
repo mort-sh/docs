@@ -2,6 +2,7 @@
 
 ## Docs
 
+- [Bytecode Caching](https://bun.com/docs/bundler/bytecode.md): Speed up JavaScript execution with bytecode caching in Bun's bundler
 - [CSS](https://bun.com/docs/bundler/css.md): Bun's bundler has built-in support for CSS with modern features
 - [esbuild](https://bun.com/docs/bundler/esbuild.md): Migration guide from esbuild to Bun's bundler
 - [Single-file executable](https://bun.com/docs/bundler/executables.md): Generate standalone executables from TypeScript or JavaScript files with Bun
@@ -11,6 +12,7 @@
 - [Bundler](https://bun.com/docs/bundler/index.md): Bun's fast native bundler for JavaScript, TypeScript, JSX, and more
 - [Loaders](https://bun.com/docs/bundler/loaders.md): Built-in loaders for the Bun bundler and runtime
 - [Macros](https://bun.com/docs/bundler/macros.md): Run JavaScript functions at bundle-time with Bun macros
+- [null](https://bun.com/docs/bundler/minifier.md): Reduce bundle sizes with Bun's JavaScript and TypeScript minifier
 - [Plugins](https://bun.com/docs/bundler/plugins.md): Universal plugin API for extending Bun's runtime and bundler
 - [Feedback](https://bun.com/docs/feedback.md): Share feedback, bug reports, and feature requests
 - [Convert an ArrayBuffer to an array of numbers](https://bun.com/docs/guides/binary/arraybuffer-to-array.md)
@@ -52,6 +54,7 @@
 - [Build an app with Nuxt and Bun](https://bun.com/docs/guides/ecosystem/nuxt.md)
 - [Run Bun as a daemon with PM2](https://bun.com/docs/guides/ecosystem/pm2.md)
 - [Use Prisma with Bun](https://bun.com/docs/guides/ecosystem/prisma.md)
+- [Use Prisma Postgres with Bun](https://bun.com/docs/guides/ecosystem/prisma-postgres.md)
 - [Build an app with Qwik and Bun](https://bun.com/docs/guides/ecosystem/qwik.md)
 - [Build a React app with Bun](https://bun.com/docs/guides/ecosystem/react.md)
 - [Build an app with Remix and Bun](https://bun.com/docs/guides/ecosystem/remix.md)
