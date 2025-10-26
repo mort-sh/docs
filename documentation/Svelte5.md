@@ -3405,6 +3405,54 @@ const { head, body } = +++await+++ render(App);
 If a `<svelte:boundary>` with a `pending` snippet is encountered during SSR, that snippet will be rendered while the rest of the content is ignored. All `await` expressions encountered outside boundaries with `pending` snippets will resolve and render their contents prior to `await render(...)` returning.
 
 
+## Forking
+
+The [`fork(...)`](svelte#fork) API, added in 5.42, makes it possible to run `await` expressions that you _expect_ to happen in the near future. This is mainly intended for frameworks like SvelteKit to implement preloading when (for example) users signal an intent to navigate.
+
+```svelte
+<script>
+	import { fork } from 'svelte';
+	import Menu from './Menu.svelte';
+
+	let open = $state(false);
+
+	/** @type {import('svelte').Fork | null} */
+	let pending = null;
+
+	function preload() {
+		pending ??= fork(() => {
+			open = true;
+		});
+	}
+
+	function discard() {
+		pending?.discard();
+		pending = null;
+	}
+</script>
+
+<button
+	onfocusin={preload}
+	onfocusout={discard}
+	onpointerenter={preload}
+	onpointerleave={discard}
+	onclick={() => {
+		pending?.commit();
+		pending = null;
+
+		// in case `pending` didn't exist
+		// (if it did, this is a no-op)
+		open = true;
+	}}
+>open menu</button>
+
+{#if open}
+	<!-- any async work inside this component will start
+	     as soon as the fork is created -->
+	<Menu onclose={() => open = false} />
+{/if}
+```
+
 ## Caveats
 
 As an experimental feature, the details of how `await` is handled (and related APIs like `$effect.pending()`) are subject to breaking changes outside of a semver major release, though we intend to keep such changes to a bare minimum.
@@ -5132,6 +5180,7 @@ import {
 	createEventDispatcher,
 	createRawSnippet,
 	flushSync,
+	fork,
 	getAbortSignal,
 	getAllContexts,
 	getContext,
@@ -5426,6 +5475,38 @@ Returns void if no callback is provided, otherwise returns the result of calling
 
 ```dts
 function flushSync<T = void>(fn?: (() => T) | undefined): T;
+```
+
+</div>
+
+
+
+## fork
+
+<blockquote class="since note">
+
+Available since 5.42
+
+</blockquote>
+
+Creates a 'fork', in which state changes are evaluated but not applied to the DOM.
+This is useful for speculatively loading data (for example) when you suspect that
+the user is about to take some action.
+
+Frameworks like SvelteKit can use this to preload data when the user touches or
+hovers over a link, making any subsequent navigation feel instantaneous.
+
+The `fn` parameter is a synchronous function that modifies some state. The
+state changes will be reverted after the fork is initialised, then reapplied
+if and when the fork is eventually committed.
+
+When it becomes clear that a fork will _not_ be committed (e.g. because the
+user navigated elsewhere), it must be discarded to avoid leaking memory.
+
+<div class="ts-block">
+
+```dts
+function fork(fn: () => void): Fork;
 ```
 
 </div>
@@ -6051,6 +6132,49 @@ interface EventDispatcher<
 ```
 
 <div class="ts-block-property-details"></div>
+</div></div>
+
+## Fork
+
+<blockquote class="since note">
+
+Available since 5.42
+
+</blockquote>
+
+Represents work that is happening off-screen, such as data being preloaded
+in anticipation of the user navigating
+
+<div class="ts-block">
+
+```dts
+interface Fork {/*…*/}
+```
+
+<div class="ts-block-property">
+
+```dts
+commit(): Promise<void>;
+```
+
+<div class="ts-block-property-details">
+
+Commit the fork. The promise will resolve once the state change has been applied
+
+</div>
+</div>
+
+<div class="ts-block-property">
+
+```dts
+discard(): void;
+```
+
+<div class="ts-block-property-details">
+
+Discard the fork
+
+</div>
 </div></div>
 
 ## MountOptions
