@@ -39,6 +39,7 @@
 - [Convert a Uint8Array to a string](https://bun.com/docs/guides/binary/typedarray-to-string.md)
 - [Deploy a Bun application on Railway](https://bun.com/docs/guides/deployment/railway.md): Deploy Bun applications to Railway with this step-by-step guide covering CLI and dashboard methods, optional PostgreSQL setup, and automatic SSL configuration.
 - [Deploy a Bun application on Render](https://bun.com/docs/guides/deployment/render.md)
+- [Deploy a Bun application on Vercel](https://bun.com/docs/guides/deployment/vercel.md)
 - [Build an app with Astro and Bun](https://bun.com/docs/guides/ecosystem/astro.md)
 - [Create a Discord bot](https://bun.com/docs/guides/ecosystem/discordjs.md)
 - [Containerize a Bun application with Docker](https://bun.com/docs/guides/ecosystem/docker.md)
@@ -264,7 +265,7 @@
 - [Node-API](https://bun.com/docs/runtime/node-api.md): Use Bun's Node-API module to build native add-ons to Node.js
 - [Node.js Compatibility](https://bun.com/docs/runtime/nodejs-compat.md): Bun's compatibility status with Node.js APIs, modules, and globals
 - [Plugins](https://bun.com/docs/runtime/plugins.md): Universal plugin API for extending Bun's runtime and bundler
-- [Redis](https://bun.com/docs/runtime/redis.md): Bun provides native bindings for working with Redis databases with a modern, Promise-based API
+- [Redis](https://bun.com/docs/runtime/redis.md): Use Bun's native Redis client with a Promise-based API
 - [S3](https://bun.com/docs/runtime/s3.md): Bun provides fast, native bindings for interacting with S3-compatible object storage services.
 - [Secrets](https://bun.com/docs/runtime/secrets.md): Use Bun's Secrets API to store and retrieve sensitive credentials securely
 - [Semver](https://bun.com/docs/runtime/semver.md): Use Bun's semantic versioning API
