@@ -37,6 +37,9 @@
 - [Convert a Uint8Array to a DataView](https://bun.com/docs/guides/binary/typedarray-to-dataview.md)
 - [Convert a Uint8Array to a ReadableStream](https://bun.com/docs/guides/binary/typedarray-to-readablestream.md)
 - [Convert a Uint8Array to a string](https://bun.com/docs/guides/binary/typedarray-to-string.md)
+- [Deploy a Bun application on AWS Lambda](https://bun.com/docs/guides/deployment/aws-lambda.md)
+- [Deploy a Bun application on DigitalOcean](https://bun.com/docs/guides/deployment/digital-ocean.md)
+- [Deploy a Bun application on Google Cloud Run](https://bun.com/docs/guides/deployment/google-cloud-run.md)
 - [Deploy a Bun application on Railway](https://bun.com/docs/guides/deployment/railway.md): Deploy Bun applications to Railway with this step-by-step guide covering CLI and dashboard methods, optional PostgreSQL setup, and automatic SSL configuration.
 - [Deploy a Bun application on Render](https://bun.com/docs/guides/deployment/render.md)
 - [Deploy a Bun application on Vercel](https://bun.com/docs/guides/deployment/vercel.md)
