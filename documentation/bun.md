@@ -68,6 +68,7 @@
 - [Build an HTTP server using StricJS and Bun](https://bun.com/docs/guides/ecosystem/stric.md)
 - [Build an app with SvelteKit and Bun](https://bun.com/docs/guides/ecosystem/sveltekit.md)
 - [Run Bun as a daemon with systemd](https://bun.com/docs/guides/ecosystem/systemd.md)
+- [Use TanStack Start with Bun](https://bun.com/docs/guides/ecosystem/tanstack-start.md)
 - [Bun Redis with Upstash](https://bun.com/docs/guides/ecosystem/upstash.md)
 - [Build a frontend using Vite and Bun](https://bun.com/docs/guides/ecosystem/vite.md)
 - [Extract links from a webpage using HTMLRewriter](https://bun.com/docs/guides/html-rewriter/extract-links.md)
