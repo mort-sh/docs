@@ -153,6 +153,7 @@
 - [Convert a ReadableStream to a string](https://bun.com/docs/guides/streams/to-string.md)
 - [Convert a ReadableStream to a Uint8Array](https://bun.com/docs/guides/streams/to-typedarray.md)
 - [Bail early with the Bun test runner](https://bun.com/docs/guides/test/bail.md)
+- [Selectively run tests concurrently with glob patterns](https://bun.com/docs/guides/test/concurrent-test-glob.md)
 - [Generate code coverage reports with the Bun test runner](https://bun.com/docs/guides/test/coverage.md)
 - [Set a code coverage threshold with the Bun test runner](https://bun.com/docs/guides/test/coverage-threshold.md)
 - [Write browser DOM tests with Bun and happy-dom](https://bun.com/docs/guides/test/happy-dom.md)
@@ -208,6 +209,7 @@
 - [Catalogs](https://bun.com/docs/pm/catalogs.md): Share common dependency versions across multiple packages in a monorepo
 - [bun add](https://bun.com/docs/pm/cli/add.md): Add packages to your project with Bun's fast package manager
 - [bun audit](https://bun.com/docs/pm/cli/audit.md): Check your installed packages for known security vulnerabilities
+- [bun info](https://bun.com/docs/pm/cli/info.md): Display package metadata from the npm registry
 - [bun install](https://bun.com/docs/pm/cli/install.md): Install packages with Bun's fast package manager
 - [bun link](https://bun.com/docs/pm/cli/link.md): Link local packages for development
 - [bun outdated](https://bun.com/docs/pm/cli/outdated.md): Check for outdated dependencies
