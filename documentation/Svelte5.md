@@ -10724,7 +10724,7 @@ The `src` directory contains the meat of your project. Everything except `src/ro
 - `hooks.server.js` contains your server [hooks](hooks)
 - `service-worker.js` contains your [service worker](service-workers)
 - `instrumentation.server.js` contains your [observability](observability) setup and instrumentation code
-  - Requires adapter support. If your adapter supports it, it is guarnteed to run prior to loading and running your application code.
+  - Requires adapter support. If your adapter supports it, it is guaranteed to run prior to loading and running your application code.
 
 (Whether the project contains `.js` or `.ts` files depends on whether you opt to use TypeScript when you create your project.)
 
@@ -23875,6 +23875,10 @@ Installs dependencies with a specified package manager:
 
 Prevents installing dependencies.
 
+### `--no-dir-check`
+
+Skip checking whether the target directory is empty.
+
 <!-- ## Programmatic interface
 
 ```js
@@ -23907,10 +23911,27 @@ You can select multiple space-separated add-ons from [the list below](#Official-
 
 ## Options
 
-- `-C`, `--cwd` — path to the root of your Svelte(Kit) project
-- `--no-git-check` — even if some files are dirty, no prompt will be shown
-- `--install` — installs dependencies with a specified package manager
-- `--no-install` — prevents installing dependencies
+### `-C`, `--cwd`
+
+Path to the root of your Svelte(Kit) project.
+
+### `--no-git-check`
+
+Even if some files are dirty, no prompt will be shown
+
+### `--install <package-manager>`
+
+Installs dependencies with a specified package manager:
+
+- `npm`
+- `pnpm`
+- `yarn`
+- `bun`
+- `deno`
+
+### `--no-install`
+
+Prevents installing dependencies
 
 ## Official add-ons
 
@@ -24202,7 +24223,7 @@ Which database variant to use:
 - `sqlite` — file-based database not requiring a database server
 
 ```sh
-npx sv add drizzle=database:postgresql
+npx sv add drizzle="database:postgresql"
 ```
 
 ### client
@@ -24214,7 +24235,7 @@ The SQL client to use, depends on `database`:
 - For `sqlite`: `better-sqlite3`, `libsql`, `turso`
 
 ```sh
-npx sv add drizzle=database:postgresql+client:postgres.js
+npx sv add drizzle="database:postgresql+client:postgres.js"
 ```
 
 Drizzle is compatible with well over a dozen database drivers. We just offer a few of the most common ones here for simplicity, but if you'd like to use another one you can choose one as a placeholder and swap it out for another after setup by choosing from [Drizzle's full list of compatible drivers](https://orm.drizzle.team/docs/connect-overview#next-steps).
@@ -24224,7 +24245,7 @@ Drizzle is compatible with well over a dozen database drivers. We just offer a f
 Whether to add Docker Compose configuration. Only available for [`database`](#Options-database) `postgresql` or `mysql`
 
 ```sh
-npx sv add drizzle=database:postgresql+client:postgres.js+docker:yes
+npx sv add drizzle="database:postgresql+client:postgres.js+docker:yes"
 ```
 
 # eslint
@@ -24266,7 +24287,7 @@ npx sv add lucia
 Whether to include demo registration and login pages.
 
 ```sh
-npx sv add lucia=demo:yes
+npx sv add lucia="demo:yes"
 ```
 
 # mcp
@@ -24290,7 +24311,7 @@ npx sv add mcp
 The IDE you want to use like `'claude-code'`, `'cursor'`, `'gemini'`, `'opencode'`, `'vscode'`, `'other'`.
 
 ```sh
-npx sv add mcp=ide:cursor,vscode
+npx sv add mcp="ide:cursor,vscode"
 ```
 
 ### setup
@@ -24298,7 +24319,7 @@ npx sv add mcp=ide:cursor,vscode
 The setup you want to use.
 
 ```sh
-npx sv add mcp=setup:local
+npx sv add mcp="setup:local"
 ```
 
 # mdsvex
@@ -24428,7 +24449,7 @@ Which SvelteKit adapter to use:
 - `netlify` — [`@sveltejs/adapter-netlify`](/docs/kit/adapter-netlify) allows you to deploy to Netlify
 
 ```sh
-npx sv add sveltekit-adapter=adapter:node
+npx sv add sveltekit-adapter="adapter:node"
 ```
 
 # tailwindcss
@@ -24445,7 +24466,7 @@ npx sv add tailwindcss
 
 - Tailwind setup following the [Tailwind for SvelteKit guide](https://tailwindcss.com/docs/installation/framework-guides/sveltekit)
 - Tailwind Vite plugin
-- updated `app.css` and `+layout.svelte` (for SvelteKit) or `App.svelte` (for non-SvelteKit Vite apps)
+- updated `layout.css` and `+layout.svelte` (for SvelteKit) or `app.css` and `App.svelte` (for non-SvelteKit Vite apps)
 - integration with `prettier` if using that package
 
 ## Options
