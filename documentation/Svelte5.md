@@ -18428,9 +18428,7 @@ type RemoteForm<
 	/** The number of pending submissions */
 	get pending(): number;
 	/** Access form fields using object notation */
-	fields: Input extends void
-		? never
-		: RemoteFormFields<Input>;
+	fields: RemoteFormFields<Input>;
 	/** Spread this onto a `<button>` or `<input type="submit">` */
 	buttonProps: {
 		type: 'submit';
@@ -24302,7 +24300,8 @@ npx sv add mcp
 
 ## What you get
 
-- A good mcp configuration for your project depending on your IDE
+- An MCP configuration for [local](https://svelte.dev/docs/mcp/local-setup) or [remote](https://svelte.dev/docs/mcp/remote-setup) setup
+- A [README for agents](https://agents.md/) to help you use the MCP server effectively
 
 ## Options
 
