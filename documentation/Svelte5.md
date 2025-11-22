@@ -13428,11 +13428,12 @@ Alternatively, you could use `select` and `select multiple`:
 
 ### Programmatic validation
 
-In addition to declarative schema validation, you can programmatically mark fields as invalid inside the form handler using the `invalid` function. This is useful for cases where you can't know if something is valid until you try to perform some action:
+In addition to declarative schema validation, you can programmatically mark fields as invalid inside the form handler using the `invalid` function. This is useful for cases where you can't know if something is valid until you try to perform some action. Just like `redirect` or `error`, `invalid` throws. It expects a list of strings (for issues relating to the form as a whole) or standard-schema-compliant issues (for those relating to a specific field). Use the `issue` parameter for type-safe creation of such issues:
 
 ```js
 /// file: src/routes/shop/data.remote.js
 import * as v from 'valibot';
+import { invalid } from '@sveltejs/kit';
 import { form } from '$app/server';
 import * as db from '$lib/server/database';
 
@@ -13443,13 +13444,13 @@ export const buyHotcakes = form(
 			v.minValue(1, 'you must buy at least one hotcake')
 		)
 	}),
-	async (data, invalid) => {
+	async (data, issue) => {
 		try {
 			await db.buy(data.qty);
 		} catch (e) {
 			if (e.code === 'OUT_OF_STOCK') {
 				invalid(
-					invalid.qty(`we don't have enough hotcakes`)
+					issue.qty(`we don't have enough hotcakes`)
 				);
 			}
 		}
@@ -16071,9 +16072,11 @@ import {
 	VERSION,
 	error,
 	fail,
+	invalid,
 	isActionFailure,
 	isHttpError,
 	isRedirect,
+	isValidationError,
 	json,
 	normalizeUrl,
 	redirect,
@@ -16187,6 +16190,48 @@ function fail<T = undefined>(
 
 
 
+## invalid
+
+<blockquote class="since note">
+
+Available since 2.47.3
+
+</blockquote>
+
+Use this to throw a validation error to imperatively fail form validation.
+Can be used in combination with `issue` passed to form actions to create field-specific issues.
+
+```ts
+import { invalid } from '@sveltejs/kit';
+import { form } from '$app/server';
+import { tryLogin } from '$lib/server/auth';
+import * as v from 'valibot';
+
+export const login = form(
+	v.object({ name: v.string(), _password: v.string() }),
+	async ({ name, _password }) => {
+		const success = tryLogin(name, _password);
+		if (!success) {
+			invalid('Incorrect username or password');
+		}
+
+		// ...
+	}
+);
+```
+
+<div class="ts-block">
+
+```dts
+function invalid(
+	...issues: (StandardSchemaV1.Issue | string)[]
+): never;
+```
+
+</div>
+
+
+
 ## isActionFailure
 
 Checks whether this is an action failure thrown by `fail`.
@@ -16228,6 +16273,26 @@ Checks whether this is a redirect thrown by `redirect`.
 
 ```dts
 function isRedirect(e: unknown): e is Redirect_1;
+```
+
+</div>
+
+
+
+## isValidationError
+
+<blockquote class="since note">
+
+Available since 2.47.3
+
+</blockquote>
+
+Checks whether this is an validation error thrown by `invalid`.
+
+<div class="ts-block">
+
+```dts
+function isValidationError(e: unknown): e is ActionFailure;
 ```
 
 </div>
@@ -17312,22 +17377,37 @@ The content of the error.
 </div>
 </div></div>
 
-## Invalid
+## InvalidField
 
 A function and proxy object used to imperatively create validation errors in form handlers.
 
-Call `invalid(issue1, issue2, ...issueN)` to throw a validation error.
-If an issue is a `string`, it applies to the form as a whole (and will show up in `fields.allIssues()`)
-Access properties to create field-specific issues: `invalid.fieldName('message')`.
+Access properties to create field-specific issues: `issue.fieldName('message')`.
 The type structure mirrors the input data structure for type-safe field access.
+Call `invalid(issue.foo(...), issue.nested.bar(...))` to throw a validation error.
 
 <div class="ts-block">
 
 ```dts
-type Invalid<Input = any> = ((
-	...issues: Array<string | StandardSchemaV1.Issue>
-) => never) &
-	InvalidField<Input>;
+type InvalidField<T> =
+	WillRecurseIndefinitely<T> extends true
+		? Record<string | number, any>
+		: NonNullable<T> extends
+					| string
+					| number
+					| boolean
+					| File
+			? (message: string) => StandardSchemaV1.Issue
+			: NonNullable<T> extends Array<infer U>
+				? {
+						[K in number]: InvalidField<U>;
+					} & ((message: string) => StandardSchemaV1.Issue)
+				: NonNullable<T> extends RemoteFormInput
+					? {
+							[K in keyof T]-?: InvalidField<T[K]>;
+						} & ((
+							message: string
+						) => StandardSchemaV1.Issue)
+					: Record<string, never>;
 ```
 
 </div>
@@ -18420,8 +18500,6 @@ type RemoteForm<
 		includeUntouched?: boolean;
 		/** Set this to `true` to only run the `preflight` validation. */
 		preflightOnly?: boolean;
-		/** Perform validation as if the form was submitted by the given button. */
-		submitter?: HTMLButtonElement | HTMLInputElement;
 	}): Promise<void>;
 	/** The result of the form submission */
 	get result(): Output | undefined;
@@ -19698,6 +19776,29 @@ decode: (data: U) => T;
 ```
 
 <div class="ts-block-property-details"></div>
+</div></div>
+
+## ValidationError
+
+A validation error thrown by `invalid`.
+
+<div class="ts-block">
+
+```dts
+interface ValidationError {/*…*/}
+```
+
+<div class="ts-block-property">
+
+```dts
+issues: StandardSchemaV1.Issue[];
+```
+
+<div class="ts-block-property-details">
+
+The validation issues
+
+</div>
 </div></div>
 
 
@@ -21389,9 +21490,7 @@ See [Remote functions](/docs/kit/remote-functions#form) for full documentation.
 
 ```dts
 function form<Output>(
-	fn: (
-		invalid: import('@sveltejs/kit').Invalid<void>
-	) => MaybePromise<Output>
+	fn: () => MaybePromise<Output>
 ): RemoteForm<void, Output>;
 ```
 
@@ -21404,7 +21503,7 @@ function form<Input extends RemoteFormInput, Output>(
 	validate: 'unchecked',
 	fn: (
 		data: Input,
-		invalid: import('@sveltejs/kit').Invalid<Input>
+		issue: InvalidField<Input>
 	) => MaybePromise<Output>
 ): RemoteForm<Input, Output>;
 ```
@@ -21424,9 +21523,7 @@ function form<
 	validate: Schema,
 	fn: (
 		data: StandardSchemaV1.InferOutput<Schema>,
-		invalid: import('@sveltejs/kit').Invalid<
-			StandardSchemaV1.InferInput<Schema>
-		>
+		issue: InvalidField<StandardSchemaV1.InferInput<Schema>>
 	) => MaybePromise<Output>
 ): RemoteForm<StandardSchemaV1.InferInput<Schema>, Output>;
 ```
@@ -23854,6 +23951,16 @@ Whether and how to add typechecking to the project:
 ### `--no-types`
 
 Prevent typechecking from being added. Not recommended!
+
+### `--add [add-ons...]`
+
+Add add-ons to the project in the `create` command. Following the same format as [sv add](sv-add#Usage).
+
+Example:
+
+```sh
+npx sv create --add eslint prettier [path]
+```
 
 ### `--no-add-ons`
 

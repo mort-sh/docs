@@ -153,7 +153,7 @@
 - [Convert a ReadableStream to a string](https://bun.com/docs/guides/streams/to-string.md)
 - [Convert a ReadableStream to a Uint8Array](https://bun.com/docs/guides/streams/to-typedarray.md)
 - [Bail early with the Bun test runner](https://bun.com/docs/guides/test/bail.md)
-- [Selectively run tests concurrently with glob patterns](https://bun.com/docs/guides/test/concurrent-test-glob.md)
+- [Selectively run tests concurrently with glob patterns](https://bun.com/docs/guides/test/concurrent-test-glob.md): Set a glob pattern to decide which tests from which files run in parallel
 - [Generate code coverage reports with the Bun test runner](https://bun.com/docs/guides/test/coverage.md)
 - [Set a code coverage threshold with the Bun test runner](https://bun.com/docs/guides/test/coverage-threshold.md)
 - [Write browser DOM tests with Bun and happy-dom](https://bun.com/docs/guides/test/happy-dom.md)
@@ -204,7 +204,7 @@
 - [Write a ReadableStream to a file](https://bun.com/docs/guides/write-file/stream.md)
 - [Delete a file](https://bun.com/docs/guides/write-file/unlink.md)
 - [Welcome to Bun](https://bun.com/docs/index.md): Bun is an all-in-one toolkit for developing modern JavaScript/TypeScript applications.
-- [Installation](https://bun.com/docs/installation.md): Install Bun
+- [Installation](https://bun.com/docs/installation.md): Install Bun with npm, Homebrew, Docker, or the official script.
 - [bunx](https://bun.com/docs/pm/bunx.md): Run packages from npm
 - [Catalogs](https://bun.com/docs/pm/catalogs.md): Share common dependency versions across multiple packages in a monorepo
 - [bun add](https://bun.com/docs/pm/cli/add.md): Add packages to your project with Bun's fast package manager
