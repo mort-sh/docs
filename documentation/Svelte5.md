@@ -4416,7 +4416,7 @@ Svelte 4 contained hooks that ran before and after the component as a whole was 
 </script>
 ```
 
-Instead of `beforeUpdate` use `$effect.pre` and instead of `afterUpdate` use `$effect` instead - these runes offer more granular control and only react to the changes you're actually interested in.
+Instead of `beforeUpdate` use `$effect.pre` and instead of `afterUpdate` use `$effect` instead — these runes offer more granular control and only react to the changes you're actually interested in.
 
 ### Chat window example
 
@@ -4584,7 +4584,7 @@ In Svelte, when you want to render asynchronous content data on the server, you 
 <h1>{user.name}</h1>
 ```
 
-That's silly, though. If we've already done the hard work of getting the data on the server, we don't want to get it again during hydration on the client. `hydratable` is a low-level API built to solve this problem. You probably won't need this very often -- it will be used behind the scenes by whatever datafetching library you use. For example, it powers [remote functions in SvelteKit](/docs/kit/remote-functions).
+That's silly, though. If we've already done the hard work of getting the data on the server, we don't want to get it again during hydration on the client. `hydratable` is a low-level API built to solve this problem. You probably won't need this very often — it will be used behind the scenes by whatever datafetching library you use. For example, it powers [remote functions in SvelteKit](/docs/kit/remote-functions).
 
 To fix the example above:
 
@@ -4922,7 +4922,7 @@ E2E (short for 'end to end') tests allow you to test your full application throu
 
 You can use the Svelte CLI to [setup Playwright](/docs/cli/playwright) either during project creation or later on. You can also [set it up with `npm init playwright`](https://playwright.dev/docs/intro). Additionally, you may also want to install an IDE plugin such as [the VS Code extension](https://playwright.dev/docs/getting-started-vscode) to be able to execute tests from inside your IDE.
 
-If you've run `npm init playwright` or are not using Vite, you may need to adjust the Playwright config to tell Playwright what to do before running the tests - mainly starting your application at a certain port. For example:
+If you've run `npm init playwright` or are not using Vite, you may need to adjust the Playwright config to tell Playwright what to do before running the tests — mainly starting your application at a certain port. For example:
 
 ```js
 /// file: playwright.config.js
@@ -6684,6 +6684,7 @@ import {
 	migrate,
 	parse,
 	preprocess,
+	print,
 	walk
 } from 'svelte/compiler';
 ```
@@ -6822,6 +6823,31 @@ function preprocess(
 		  }
 		| undefined
 ): Promise<Processed>;
+```
+
+</div>
+
+
+
+## print
+
+`print` converts a Svelte AST node back into Svelte source code.
+It is primarily intended for tools that parse and transform components using the compiler’s modern AST representation.
+
+`print(ast)` requires an AST node produced by parse with modern: true, or any sub-node within that modern AST.
+The result contains the generated source and a corresponding source map.
+The output is valid Svelte, but formatting details such as whitespace or quoting may differ from the original.
+
+<div class="ts-block">
+
+```dts
+function print(
+	ast: AST.SvelteNode,
+	options?: Options | undefined
+): {
+	code: string;
+	map: any;
+};
 ```
 
 </div>
@@ -7084,7 +7110,7 @@ namespace AST {
 		expression: null | Expression;
 	}
 
-	interface BaseElement extends BaseNode {
+	export interface BaseElement extends BaseNode {
 		name: string;
 		attributes: Array<
 			Attribute | SpreadAttribute | Directive | AttachTag
