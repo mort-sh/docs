@@ -187,6 +187,7 @@
 - [Get the absolute path to the current entrypoint](https://bun.com/docs/guides/util/main.md)
 - [Convert an absolute path to a file URL](https://bun.com/docs/guides/util/path-to-file-url.md)
 - [Sleep for a fixed number of milliseconds](https://bun.com/docs/guides/util/sleep.md)
+- [Upgrade Bun to the latest version](https://bun.com/docs/guides/util/upgrade.md)
 - [Get the current Bun version](https://bun.com/docs/guides/util/version.md)
 - [Get the path to an executable bin file](https://bun.com/docs/guides/util/which-path-to-executable-bin.md)
 - [Enable compression for WebSocket messages](https://bun.com/docs/guides/websocket/compression.md)
