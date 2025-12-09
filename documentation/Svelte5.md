@@ -1194,7 +1194,7 @@ This is useful for linking elements via attributes like `for` and `aria-labelled
 
 Ordinarily, props go one way, from parent to child. This makes it easy to understand how data flows around your app.
 
-In Svelte, component props can be _bound_, which means that data can also flow _up_ from child to parent. This isn't something you should do often, but it can simplify your code if used sparingly and carefully.
+In Svelte, component props can be _bound_, which means that data can also flow _up_ from child to parent. This isn't something you should do often — overuse can make your data flow unpredictable and your components harder to maintain — but it can simplify your code if used sparingly and carefully.
 
 It also means that a state proxy can be _mutated_ in the child.
 
@@ -21244,7 +21244,7 @@ function invalidate(
 
 ## invalidateAll
 
-Causes all `load` functions belonging to the currently active page to re-run. Returns a `Promise` that resolves when the page is subsequently updated.
+Causes all `load` and `query` functions belonging to the currently active page to re-run. Returns a `Promise` that resolves when the page is subsequently updated.
 
 <div class="ts-block">
 
