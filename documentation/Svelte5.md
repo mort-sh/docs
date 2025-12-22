@@ -24729,6 +24729,14 @@ Which SvelteKit adapter to use:
 npx sv add sveltekit-adapter="adapter:node"
 ```
 
+### cloudflare target
+
+Whether to deploy to Cloudflare Workers or Pages. Only available for `cloudflare` adapter.
+
+```sh
+npx sv add sveltekit-adapter="adapter:cloudflare+cfTarget:workers"
+```
+
 # tailwindcss
 
 [Tailwind CSS](https://tailwindcss.com/) allows you to rapidly build modern websites without ever leaving your HTML.
