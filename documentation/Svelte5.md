@@ -8665,7 +8665,7 @@ function on<Type extends keyof WindowEventMap>(
 	type: Type,
 	handler: (
 		this: Window,
-		event: WindowEventMap[Type]
+		event: WindowEventMap[Type] & { currentTarget: Window }
 	) => any,
 	options?: AddEventListenerOptions | undefined
 ): () => void;
@@ -8681,7 +8681,9 @@ function on<Type extends keyof DocumentEventMap>(
 	type: Type,
 	handler: (
 		this: Document,
-		event: DocumentEventMap[Type]
+		event: DocumentEventMap[Type] & {
+			currentTarget: Document;
+		}
 	) => any,
 	options?: AddEventListenerOptions | undefined
 ): () => void;
@@ -8700,7 +8702,9 @@ function on<
 	type: Type,
 	handler: (
 		this: Element,
-		event: HTMLElementEventMap[Type]
+		event: HTMLElementEventMap[Type] & {
+			currentTarget: Element;
+		}
 	) => any,
 	options?: AddEventListenerOptions | undefined
 ): () => void;
@@ -8719,7 +8723,9 @@ function on<
 	type: Type,
 	handler: (
 		this: Element,
-		event: MediaQueryListEventMap[Type]
+		event: MediaQueryListEventMap[Type] & {
+			currentTarget: Element;
+		}
 	) => any,
 	options?: AddEventListenerOptions | undefined
 ): () => void;
@@ -10904,7 +10910,7 @@ If you added [Vitest](https://vitest.dev) when you set up your project, your uni
 
 ### static
 
-Any static assets that should be served as-is, like `robots.txt` or `favicon.png`, go in here.
+Any static assets that should be served without any alteration to the name — such as `robots.txt` — go in here. It's generally preferable to minimize the number of assets in `static/` and instead `import` them. Using an `import` allows [Vite's built-in handling](images#Vite's-built-in-handling) to give a unique name to an asset based on a hash of its contents so that it can be cached.
 
 ### tests
 
@@ -13973,7 +13979,7 @@ This attribute exists on the `buttonProps` property of a form object:
 ```svelte
 <!--- file: src/routes/login/+page.svelte --->
 <script>
-	import { login, register } from '$lib/auth';
+	import { login, register } from '$lib/auth.remote';
 </script>
 
 <form {...login}>

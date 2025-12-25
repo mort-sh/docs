@@ -183,7 +183,7 @@ If you added [Vitest](https://vitest.dev) when you set up your project, your uni
 
 ### static
 
-Any static assets that should be served as-is, like `robots.txt` or `favicon.png`, go in here.
+Any static assets that should be served without any alteration to the name — such as `robots.txt` — go in here. It's generally preferable to minimize the number of assets in `static/` and instead `import` them. Using an `import` allows [Vite's built-in handling](images#Vite's-built-in-handling) to give a unique name to an asset based on a hash of its contents so that it can be cached.
 
 ### tests
 
@@ -3300,7 +3300,7 @@ This attribute exists on the `buttonProps` property of a form object:
 ```svelte
 <!--- file: src/routes/login/+page.svelte --->
 <script>
-	import { login, register } from '$lib/auth';
+	import { login, register } from '$lib/auth.remote';
 </script>
 
 <form {...login}>
@@ -4426,7 +4426,7 @@ export {};
 
 Cloudflare specific values in the `platform` property are emulated during dev and preview modes. Local [bindings](https://developers.cloudflare.com/workers/wrangler/configuration/#bindings) are created based on your [Wrangler configuration file](https://developers.cloudflare.com/workers/wrangler/) and are used to populate `platform.env` during development and preview. Use the adapter config [`platformProxy` option](#Options-platformProxy) to change your preferences for the bindings.
 
-For testing the build, you should use [Wrangler](https://developers.cloudflare.com/workers/wrangler/) version 4. Once you have built your site, run `wrangler dev .svelte-kit/cloudflare` if you're testing for Cloudflare Workers or `wrangler pages dev .svelte-kit/cloudflare` for Cloudflare Pages.
+For testing the build, you should use [Wrangler](https://developers.cloudflare.com/workers/wrangler/) version 4. Once you have built your site, run `wrangler dev .svelte-kit/cloudflare/_worker.js` if you're testing for Cloudflare Workers or `wrangler pages dev .svelte-kit/cloudflare` for Cloudflare Pages.
 
 ## Headers and redirects
 
