@@ -24990,6 +24990,8 @@ claude mcp add -t http -s [scope] svelte https://mcp.svelte.dev/mcp
 
 You can choose your preferred `scope` (it must be `user`, `project` or `local`) and `name`.
 
+If you prefer you can also install the `svelte` plugin in [the Svelte Claude Code Marketplace](plugin) that will give you both the remote server and a useful [skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview).
+
 ## Claude Desktop
 
 - Open Settings > Connectors
@@ -25330,3 +25332,45 @@ If you are not writing the code into a file, once you have the final version of 
 ```
 
 </details>
+
+# Overview
+
+The open source [repository](https://github.com/sveltejs/mcp) containing the code for the MCP server is also a Claude Code Marketplace plugin.
+
+The marketplace allow you to install the `svelte` plugin which will give you both the remote MCP server, a [skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) to instruct the LLM on how to properly write Svelte 5 code, and a specialized agent for editing Svelte files.
+
+If possible is recommended to instruct the LLM to execute MCP calls with the agent (you can explicitly mention an agent in your message to delegate work to it) when creating or editing `.svelte` files or `.svelte.ts`/`.svelte.js` modules as it helps save context by handling Svelte-specific tasks more efficiently.
+
+## Installation
+
+To add the repository as a marketplace launch claude code and type
+
+```bash
+/plugin marketplace add sveltejs/mcp
+```
+
+once you do that you can install the svelte skill doing
+
+```bash
+/plugin install svelte
+```
+
+# Skill
+
+Claude Skills are a set of Markdown files that live in your `.claude` folder (or that you can upload in your Claude web/desktop). They are automatically loaded by Claude when it thinks they are appropriate for the current task.
+
+With those markdown files you can steer the agent behaviours and, in our case, we teach him how to properly write Svelte 5 code. The advantage over the MCP server is that the relevant tokens are only loaded when they are needed (so if you ask the LLM to write a Typescript utility in a Svelte project it will not load the skill in the context).
+
+You can find the skill inside the [`sveltejs/mcp`](https://github.com/sveltejs/mcp/tree/main/plugins/svelte/skills) repo (it's in the `/plugins/svelte/skills` folder). You can also download the latest zip file from the [releases page](https://github.com/sveltejs/mcp/releases?q=svelte-code-writer) to load it in your Claude web/desktop or to extract it inside your `.claude` folder.
+
+If you are using Claude Code you can also install it through the [Svelte marketplace](plugin).
+
+# Subagent
+
+The Svelte plugin includes a specialized subagent called `svelte-file-editor` designed for creating, editing, and reviewing Svelte files.
+
+## Benefits
+
+The subagent is executed in a separate "agent" that has access to it's own context window. This allows the agent to fetch the documentation, iterate with the `svelte-autofixer` tool and write to the file system without wasting context in the main agent.
+
+The delegation should happen automatically when appropriate, but you can also explicitly request the subagent be used for Svelte-related tasks.
