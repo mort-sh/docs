@@ -14097,7 +14097,7 @@ import { PUBLIC_BASE_URL } from '$env/static/public';
 
 # $lib
 
-SvelteKit automatically makes files under `src/lib` available using the `$lib` import alias. You can change which directory this alias points to in your [config file](configuration#files).
+SvelteKit automatically makes files under `src/lib` available using the `$lib` import alias.
 
 ```svelte
 <!--- file: src/lib/Component.svelte --->
@@ -14308,8 +14308,6 @@ const config = {
 	}
 };
 ```
-
-> [!NOTE] The built-in `$lib` alias is controlled by `config.kit.files.lib` as it is used for packaging.
 
 > [!NOTE] You will need to run `npm run dev` to have SvelteKit automatically generate the required alias configuration in `jsconfig.json` or `tsconfig.json`.
 

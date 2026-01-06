@@ -22272,7 +22272,7 @@ import { PUBLIC_BASE_URL } from '$env/static/public';
 
 # $lib
 
-SvelteKit automatically makes files under `src/lib` available using the `$lib` import alias. You can change which directory this alias points to in your [config file](configuration#files).
+SvelteKit automatically makes files under `src/lib` available using the `$lib` import alias.
 
 ```svelte
 <!--- file: src/lib/Component.svelte --->
@@ -22483,7 +22483,6 @@ const config = {
 	}
 };
 ```
-
 
 
 <div class="ts-block-property-children">
