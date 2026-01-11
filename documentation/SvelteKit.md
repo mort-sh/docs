@@ -3871,6 +3871,10 @@ The number of seconds to wait before forcefully closing any remaining connection
 
 When using systemd socket activation, `IDLE_TIMEOUT` specifies the number of seconds after which the app is automatically put to sleep when receiving no requests. If not set, the app runs continuously. See [Socket activation](#Socket-activation) for more details.
 
+### `KEEP_ALIVE_TIMEOUT` and `HEADERS_TIMEOUT`
+
+The number of seconds for [`keepAliveTimeout`](https://nodejs.org/api/http.html#serverkeepalivetimeout) and [`headersTimeout`](https://nodejs.org/api/http.html#serverheaderstimeout).
+
 ## Options
 
 The adapter can be configured with various options:
@@ -14685,6 +14689,25 @@ remoteFunctions?: boolean;
 </div>
 
 Whether to enable the experimental remote functions feature. This feature is not yet stable and may be changed or removed at any time.
+
+</div>
+</div>
+<div class="ts-block-property">
+
+```ts
+// @noErrors
+forkPreloads?: boolean;
+```
+
+<div class="ts-block-property-details">
+
+<div class="ts-block-property-bullets">
+
+- <span class="tag">default</span> `false`
+
+</div>
+
+Whether to enable the experimental forked preloading feature using Svelte's fork API.
 
 </div>
 </div>

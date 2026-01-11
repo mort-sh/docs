@@ -237,6 +237,7 @@
 - [License](https://bun.com/docs/project/license.md): License for Bun
 - [Roadmap](https://bun.com/docs/project/roadmap.md): Bun's roadmap and long-term plans
 - [Quickstart](https://bun.com/docs/quickstart.md): Build your first app with Bun
+- [Archive](https://bun.com/docs/runtime/archive.md): Create and extract tar archives with Bun's fast native implementation
 - [Auto-install](https://bun.com/docs/runtime/auto-install.md): Bun's automatic package installation feature for standalone script execution
 - [Binary Data](https://bun.com/docs/runtime/binary-data.md): Working with binary data in JavaScript
 - [Bun APIs](https://bun.com/docs/runtime/bun-apis.md): Overview of Bun's native APIs available on the Bun global object and built-in modules
