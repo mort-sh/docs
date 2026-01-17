@@ -24907,7 +24907,7 @@ The `[scope]` must be `user`, `project` or `local`.
 
 ## OpenCode
 
-Run the command:
+You can automatically configure the MCP server using the [OpenCode plugin](opencode-plugin) (recommended). If you prefer to configure the MCP server manually, run:
 
 ```bash
 opencode mcp add
@@ -25037,7 +25037,7 @@ The `[scope]` must be `user` or `project`.
 
 ## OpenCode
 
-Run the command:
+You can automatically configure the MCP server using the [OpenCode plugin](opencode-plugin) (recommended). If you prefer to configure the MCP server manually, run:
 
 ```bash
 opencode mcp add
@@ -25352,19 +25352,19 @@ If you are not writing the code into a file, once you have the final version of 
 
 The open source [repository](https://github.com/sveltejs/mcp) containing the code for the MCP server is also a Claude Code Marketplace plugin.
 
-The marketplace allow you to install the `svelte` plugin which will give you both the remote MCP server, a [skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) to instruct the LLM on how to properly write Svelte 5 code, and a specialized agent for editing Svelte files.
+The marketplace allows you to install the `svelte` plugin which will give you both the remote MCP server, a [skill](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview) to instruct the LLM on how to properly write Svelte 5 code, and a specialized agent for editing Svelte files.
 
-If possible is recommended to instruct the LLM to execute MCP calls with the agent (you can explicitly mention an agent in your message to delegate work to it) when creating or editing `.svelte` files or `.svelte.ts`/`.svelte.js` modules as it helps save context by handling Svelte-specific tasks more efficiently.
+If possible, we recommend that you instruct the LLM to execute MCP calls with the agent (you can explicitly mention an agent in your message to delegate work to it) when creating or editing `.svelte` files or `.svelte.ts`/`.svelte.js` modules as it helps save context by handling Svelte-specific tasks more efficiently.
 
 ## Installation
 
-To add the repository as a marketplace launch claude code and type
+To add the repository as a marketplace, launch Claude Code and type the following:
 
 ```bash
 /plugin marketplace add sveltejs/mcp
 ```
 
-once you do that you can install the svelte skill doing
+Then, install the Svelte skill:
 
 ```bash
 /plugin install svelte
@@ -25372,11 +25372,11 @@ once you do that you can install the svelte skill doing
 
 # Skill
 
-Claude Skills are a set of Markdown files that live in your `.claude` folder (or that you can upload in your Claude web/desktop). They are automatically loaded by Claude when it thinks they are appropriate for the current task.
+Claude Skills are sets of markdown files that live in your `.claude` folder (or that you can upload via the Claude web/desktop app). They are automatically loaded by Claude when it thinks they are appropriate for the current task.
 
-With those markdown files you can steer the agent behaviours and, in our case, we teach him how to properly write Svelte 5 code. The advantage over the MCP server is that the relevant tokens are only loaded when they are needed (so if you ask the LLM to write a Typescript utility in a Svelte project it will not load the skill in the context).
+With those markdown files you can steer the agent's behaviour and, in our case, teach it how to properly write Svelte 5 code. The advantage over the MCP server is that the relevant tokens are only loaded when they are needed (for example, if you ask the LLM to write a Typescript utility in a Svelte project it will not load the skill in the context).
 
-You can find the skill inside the [`sveltejs/mcp`](https://github.com/sveltejs/mcp/tree/main/plugins/svelte/skills) repo (it's in the `/plugins/svelte/skills` folder). You can also download the latest zip file from the [releases page](https://github.com/sveltejs/mcp/releases?q=svelte-code-writer) to load it in your Claude web/desktop or to extract it inside your `.claude` folder.
+You can find the skill inside the [`sveltejs/mcp`](https://github.com/sveltejs/mcp) repo in the [`plugins/svelte/skills`](https://github.com/sveltejs/mcp/tree/main/plugins/svelte/skills) folder. You can also download the latest zip file from the [releases page](https://github.com/sveltejs/mcp/releases?q=svelte-code-writer) to load it in the Claude web/desktop app or to extract it inside your `.claude` folder.
 
 If you are using Claude Code you can also install it through the [Svelte marketplace](plugin).
 
@@ -25386,6 +25386,54 @@ The Svelte plugin includes a specialized subagent called `svelte-file-editor` de
 
 ## Benefits
 
-The subagent is executed in a separate "agent" that has access to it's own context window. This allows the agent to fetch the documentation, iterate with the `svelte-autofixer` tool and write to the file system without wasting context in the main agent.
+The subagent has access to its own context window, allowing it to fetch the documentation, iterate with the `svelte-autofixer` tool and write to the file system without wasting context in the main agent.
+
+The delegation should happen automatically when appropriate, but you can also explicitly request the subagent be used for Svelte-related tasks.
+
+# Overview
+
+OpenCode has a [plugin system](https://opencode.ai/docs/plugins/) that allows developers to add MCP servers, agents and commands programmatically. Svelte has an OpenCode plugin published under `@sveltejs/opencode`.
+
+## Installation
+
+To install the plugin in OpenCode you can edit your [OpenCode config]() (either the global or the local one), adding `@sveltejs/opencode` to the list of plugins.
+
+```json
+{
+	"$schema": "https://opencode.ai/config.json",
+	"plugin": ["@sveltejs/opencode"]
+}
+```
+
+That's it! You now have the Svelte MCP server and the [file editor subagent](opencode-subagent) configured for you.
+
+## Configuration
+
+The default configuration for the Svelte OpenCode plugin looks like this...
+
+```json
+{
+	"$schema": "https://raw.githubusercontent.com/sveltejs/mcp/refs/heads/main/packages/opencode/schema.json",
+	"mcp": {
+		"type": "remote",
+		"enabled": true
+	},
+	"subagent": {
+		"enabled": true
+	}
+}
+```
+
+...but if you prefer, you can enable only the subagent, only the MCP, or configure the kind of MCP server you want to use (`local` or `remote`).
+
+You can place this file in `~/.config/opencode/svelte.json` or, if you have an `OPENCODE_CONFIG_DIR` environment variable specified, at `$OPENCODE_CONFIG_DIR/svelte.json`.
+
+# Subagent
+
+The Svelte plugin includes a specialized subagent called `svelte-file-editor` designed for creating, editing, and reviewing Svelte files.
+
+## Benefits
+
+The subagent has access to its own context window, allowing it to fetch the documentation, iterate with the `svelte-autofixer` tool and write to the file system without wasting context in the main agent.
 
 The delegation should happen automatically when appropriate, but you can also explicitly request the subagent be used for Svelte-related tasks.
