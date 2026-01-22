@@ -2864,12 +2864,15 @@ In the case of `radio` and `checkbox` inputs that all belong to the same field, 
 import * as v from 'valibot';
 import { form } from '$app/server';
 // ---cut---
+export const operatingSystems = /** @type {const} */ (['windows', 'mac', 'linux']);
+export const languages = /** @type {const} */ (['html', 'css', 'js']);
+
 export const survey = form(
 	v.object({
-		operatingSystem: v.picklist(['windows', 'mac', 'linux']),
-		languages: v.optional(v.array(v.picklist(['html', 'css', 'js'])), [])
+		operatingSystem: v.picklist(operatingSystems),
+		languages: v.optional(v.array(v.picklist(languages)), []),
 	}),
-	(data) => { /* ... */ }
+	(data) => { /* ... */ },
 );
 ```
 
@@ -2877,7 +2880,7 @@ export const survey = form(
 <form {...survey}>
 	<h2>Which operating system do you use?</h2>
 
-	{#each ['windows', 'mac', 'linux'] as os}
+	{#each operatingSystems as os}
 		<label>
 			<input {...survey.fields.operatingSystem.as('radio', os)}>
 			{os}
@@ -2886,7 +2889,7 @@ export const survey = form(
 
 	<h2>Which languages do you write code in?</h2>
 
-	{#each ['html', 'css', 'js'] as language}
+	{#each languages as language}
 		<label>
 			<input {...survey.fields.languages.as('checkbox', language)}>
 			{language}
@@ -2904,17 +2907,17 @@ Alternatively, you could use `select` and `select multiple`:
 	<h2>Which operating system do you use?</h2>
 
 	<select {...survey.fields.operatingSystem.as('select')}>
-		<option>windows</option>
-		<option>mac</option>
-		<option>linux</option>
+		{#each operatingSystems as os}
+			<option>{os}</option>
+		{/each}
 	</select>
 
 	<h2>Which languages do you write code in?</h2>
 
 	<select {...survey.fields.languages.as('select multiple')}>
-		<option>html</option>
-		<option>css</option>
-		<option>js</option>
+		{#each languages as language}
+			<option>{language}</option>
+		{/each}
 	</select>
 
 	<button>submit</button>
@@ -4327,13 +4330,11 @@ Preferences for the emulated `platform.env` local bindings. See the [getPlatform
 
 Whether to render a plaintext 404.html page or a rendered SPA fallback page for non-matching asset requests.
 
-For Cloudflare Workers, the default behaviour is to return a null-body 404-status response for non-matching assets requests. However, if the [`assets.not_found_handling`](https://developers.cloudflare.com/workers/static-assets/routing/#2-not_found_handling) Wrangler configuration setting is set to `"404-page"`, this page will be served if a request fails to match an asset. If `assets.not_found_handling` is set to `"single-page-application"`, the adapter will render a SPA fallback index.html page regardless of the `fallback` option specified.
+For Cloudflare Workers, the default behaviour is to return a null-body 404-status response for non-matching assets requests. However, if the [`assets.not_found_handling`](https://developers.cloudflare.com/workers/static-assets/routing/#2-not_found_handling) Wrangler configuration setting is set to `"404-page"`, this page will be served if a request fails to match an asset. If `assets.not_found_handling` is set to `"single-page-application"`, the adapter will render a SPA fallback `index.html` page regardless of the `fallback` option specified.
 
 For Cloudflare Pages, this page will only be served when a request that matches an entry in `routes.exclude` fails to match an asset.
 
-Most of the time `plaintext` is sufficient, but if you are using `routes.exclude` to manually
-exclude a set of prerendered pages without exceeding the 100 route limit, you may wish to
-use `spa` instead to avoid showing an unstyled 404 page to users.
+Most of the time `plaintext` is sufficient, but if you are using `routes.exclude` to manually exclude a set of prerendered pages without exceeding the 100 route limit, you may wish to use `spa` instead to avoid showing an unstyled 404 page to users.
 
 See Cloudflare Pages' [Not Found behaviour](https://developers.cloudflare.com/pages/configuration/serving-pages/#not-found-behavior) for more info.
 
@@ -4361,7 +4362,7 @@ When building for Cloudflare Workers, this adapter expects to find a [Wrangler c
 {
 	"name": "<any-name-you-want>",
 	"main": ".svelte-kit/cloudflare/_worker.js",
-	"compatibility_date": "2025-01-01",
+	"compatibility_date": "<YYYY-MM-DD>",
 	"assets": {
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare",
@@ -4371,7 +4372,7 @@ When building for Cloudflare Workers, this adapter expects to find a [Wrangler c
 
 ### Deployment
 
-Please follow the [framework guide](https://developers.cloudflare.com/workers/frameworks/framework-guides/svelte/) for Cloudflare Workers to begin.
+You can use the Wrangler CLI to deploy your application by running `npx wrangler deploy` or use the [Cloudflare Git integration](https://developers.cloudflare.com/workers/ci-cd/builds/) to enable automatic builds and deployments on push.
 
 ## Cloudflare Pages
 

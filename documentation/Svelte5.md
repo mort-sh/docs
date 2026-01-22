@@ -6744,6 +6744,7 @@ import {
 	compileModule,
 	migrate,
 	parse,
+	parseCss,
 	preprocess,
 	print,
 	walk
@@ -6861,6 +6862,22 @@ function parse(
 		  }
 		| undefined
 ): Record<string, any>;
+```
+
+</div>
+
+
+
+## parseCss
+
+The parseCss function parses a CSS stylesheet, returning its abstract syntax tree.
+
+<div class="ts-block">
+
+```dts
+function parseCss(
+	source: string
+): Omit<AST.CSS.StyleSheet, 'attributes' | 'content'>;
 ```
 
 </div>
@@ -13546,12 +13563,15 @@ In the case of `radio` and `checkbox` inputs that all belong to the same field, 
 import * as v from 'valibot';
 import { form } from '$app/server';
 // ---cut---
+export const operatingSystems = /** @type {const} */ (['windows', 'mac', 'linux']);
+export const languages = /** @type {const} */ (['html', 'css', 'js']);
+
 export const survey = form(
 	v.object({
-		operatingSystem: v.picklist(['windows', 'mac', 'linux']),
-		languages: v.optional(v.array(v.picklist(['html', 'css', 'js'])), [])
+		operatingSystem: v.picklist(operatingSystems),
+		languages: v.optional(v.array(v.picklist(languages)), []),
 	}),
-	(data) => { /* ... */ }
+	(data) => { /* ... */ },
 );
 ```
 
@@ -13559,7 +13579,7 @@ export const survey = form(
 <form {...survey}>
 	<h2>Which operating system do you use?</h2>
 
-	{#each ['windows', 'mac', 'linux'] as os}
+	{#each operatingSystems as os}
 		<label>
 			<input {...survey.fields.operatingSystem.as('radio', os)}>
 			{os}
@@ -13568,7 +13588,7 @@ export const survey = form(
 
 	<h2>Which languages do you write code in?</h2>
 
-	{#each ['html', 'css', 'js'] as language}
+	{#each languages as language}
 		<label>
 			<input {...survey.fields.languages.as('checkbox', language)}>
 			{language}
@@ -13586,17 +13606,17 @@ Alternatively, you could use `select` and `select multiple`:
 	<h2>Which operating system do you use?</h2>
 
 	<select {...survey.fields.operatingSystem.as('select')}>
-		<option>windows</option>
-		<option>mac</option>
-		<option>linux</option>
+		{#each operatingSystems as os}
+			<option>{os}</option>
+		{/each}
 	</select>
 
 	<h2>Which languages do you write code in?</h2>
 
 	<select {...survey.fields.languages.as('select multiple')}>
-		<option>html</option>
-		<option>css</option>
-		<option>js</option>
+		{#each languages as language}
+			<option>{language}</option>
+		{/each}
 	</select>
 
 	<button>submit</button>
@@ -24123,6 +24143,8 @@ Which project template to use:
 - `minimal` — barebones scaffolding for your new app
 - `demo` — showcase app with a word guessing game that works without JavaScript
 - `library` — template for a Svelte library, set up with `svelte-package`
+  <!-- TODO: JYC: Uncomment this when the addon template is ready -->
+  <!-- - `addon` — template for a community add-on, ready to be tested & published -->
 
 ### `--types <option>`
 
@@ -24167,20 +24189,6 @@ Prevents installing dependencies.
 
 Skip checking whether the target directory is empty.
 
-<!-- ## Programmatic interface
-
-```js
-// TODO: this gives type checking errors in the docs site when not commented out. Need to release sv, install it in the site, and uncomment this.
-// import { create } from 'sv';
-
-// // todo: check if this is right
-// create(cwd, {
-// 	// add your options here
-// 	// todo: list available option
-// });
-```
--->
-
 # sv add
 
 `sv add` updates an existing project with new functionality.
@@ -24207,6 +24215,13 @@ Path to the root of your Svelte(Kit) project.
 
 Even if some files are dirty, no prompt will be shown
 
+### `--no-download-check`
+
+Skip all download confirmation prompts
+
+> [!IMPORTANT]
+> Svelte maintainers have not reviewed community add-ons for malicious code. Use at your discretion
+
 ### `--install <package-manager>`
 
 Installs dependencies with a specified package manager:
@@ -24223,8 +24238,6 @@ Prevents installing dependencies
 
 ## Official add-ons
 
-<!-- TODO: it'd be nice for this to live on the "add-ons" page, but we first need svelte.dev to support making pages from headings -->
-
 - [`devtools-json`](devtools-json)
 - [`drizzle`](drizzle)
 - [`eslint`](eslint)
@@ -24238,6 +24251,59 @@ Prevents installing dependencies
 - [`sveltekit-adapter`](sveltekit-adapter)
 - [`tailwindcss`](tailwind)
 - [`vitest`](vitest)
+
+## Community add-ons
+
+> Community add-ons are currently **experimental**. The API may change. Don't use them in production yet!
+
+> Svelte maintainers have not reviewed community add-ons for malicious code!
+
+You can find [community add-ons on npm](https://www.npmjs.com/search?q=keywords%3Asv-add) by searching for `keywords:sv-add`.
+
+### How to install a community add-on
+
+```sh
+npx sv add [PROTOCOL][COMMUNITY_ADDON]
+```
+
+You can:
+
+- mix and match official and community add-ons
+- use the interactive prompt or give args to the cli
+- use the `--add` option in the `create` command
+
+```sh
+npx sv add eslint "@supacool"
+```
+
+```sh
+npx sv create --add eslint "@supacool"
+```
+
+### Package Protocols
+
+```sh
+# Scoped package: @org (preferred), we will look for @org/sv
+npx sv add "@supacool"
+
+# Regular npm package (with or without scope)
+npx sv add my-cool-addon
+
+# Local add-on
+npx sv add file:../path/to/my-addon
+```
+
+### How to create a community add-on
+
+To start on a good track, create your add-on with the `addon` template.
+
+```sh
+npx sv create --template addon [path]
+```
+
+In your new add-on directory, check out the `README.md` and `CONTRIBUTING.md` to get started.
+
+Then you can continue with the [API docs](/docs/cli/add-on) to start building your add-on. You can also have a look at the [official addons source code](https://github.com/sveltejs/cli/tree/main/packages/sv/lib/addons) to get some inspiration on what can be done.
 
 # sv check
 
@@ -24794,6 +24860,154 @@ npx sv add vitest
 - the relevant packages installed and scripts added to your `package.json`
 - client/server-aware testing setup for Svelte in your Vite config file
 - demo tests
+
+# add-on
+
+> Community add-ons are currently **experimental**. The API may change. Don't use them in production yet!
+
+This guide covers how to create, test, and publish community add-ons for `sv`.
+
+## Quick start
+
+The easiest way to create an add-on is using the addon template:
+
+```sh
+npx sv create --template addon my-addon
+cd my-addon
+```
+
+## Add-on structure
+
+Typically, an add-on looks like this:
+
+_hover keywords in the code to have some more context_
+
+```js
+import { defineAddon, defineAddonOptions, parse, svelte } from 'sv/core';
+
+// Define options that will be prompted to the user (or passed as arguments)
+const options = defineAddonOptions()
+	.add('who', {
+		question: 'To whom should the addon say hello?',
+		type: 'string' // boolean | number | select | multiselect
+	})
+	.build();
+
+// your add-on definition, the entry point
+export default defineAddon({
+	id: 'your-addon-name',
+
+	options,
+
+	// preparing step, check requirements and dependencies
+	setup: ({ dependsOn }) => {
+		dependsOn('tailwindcss');
+	},
+
+	// actual execution of the addon
+	run: ({ kit, cancel, sv, options }) => {
+		if (!kit) return cancel('SvelteKit is required');
+
+		// Add "Hello [who]!"" to the root page
+		sv.file(kit.routesDirectory + '/+page.svelte', (content) => {
+			const { ast, generateCode } = parse.svelte(content);
+
+			svelte.addFragment(ast, `<p>Hello ${options.who}!</p>`);
+
+			return generateCode();
+		});
+	}
+});
+```
+
+## Development with `file:` protocol
+
+While developing your add-on, you can test it locally using the `file:` protocol:
+
+```sh
+# In your test project
+npx sv add file:../path/to/my-addon
+```
+
+This allows you to iterate quickly without publishing to npm.
+
+## Testing with `sv/testing`
+
+The `sv/testing` module provides utilities for testing your add-on:
+
+```js
+import { test, expect } from 'vitest';
+import { setupTest } from 'sv/testing';
+import addon from './index.js';
+
+test('adds hello message', async () => {
+	const { content } = await setupTest({
+		addon,
+		options: { who: 'World' },
+		files: {
+			'src/routes/+page.svelte': '<h1>Welcome</h1>'
+		}
+	});
+
+	expect(content('src/routes/+page.svelte')).toContain('Hello World!');
+});
+```
+
+## Publishing to npm
+
+### Package structure
+
+Your add-on must have `sv` as a dependency in `package.json`:
+
+```json
+{
+	"name": "@your-org/sv",
+	"version": "1.0.0",
+	"type": "module",
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"dependencies": {
+		"sv": "^0.11.0"
+	},
+	"keywords": ["sv-add"]
+}
+```
+
+> Add the `sv-add` keyword so users can discover your add-on on npm.
+
+### Export options
+
+Your package can export the add-on in two ways:
+
+1. **Default export** (recommended for dedicated add-on packages):
+
+   ```json
+   {
+   	"exports": {
+   		".": "./dist/index.js"
+   	}
+   }
+   ```
+
+2. **`/sv` export** (for packages that have other functionality):
+   ```json
+   {
+   	"exports": {
+   		".": "./dist/main.js",
+   		"./sv": "./dist/addon.js"
+   	}
+   }
+   ```
+
+### Naming conventions
+
+- **Scoped packages**: Use `@your-org/sv` as the package name. Users can then install with just `npx sv add @your-org`.
+- **Regular packages**: Any name works. Users install with `npx sv add your-package-name`.
+
+## Version compatibility
+
+Your add-on should specify the minimum `sv` version it requires in `package.json`. If a user's `sv` version has a different major version than what your add-on was built for, they will see a compatibility warning.
 # Start of Svelte MCP documentation
 
 
