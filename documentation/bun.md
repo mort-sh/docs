@@ -265,6 +265,7 @@
 - [TLS](https://bun.com/docs/runtime/http/tls.md): Enable TLS in Bun.serve
 - [WebSockets](https://bun.com/docs/runtime/http/websockets.md): Server-side WebSockets in Bun
 - [Bun Runtime](https://bun.com/docs/runtime/index.md): Execute JavaScript/TypeScript files, package.json scripts, and executable packages with Bun's fast runtime.
+- [JSONL](https://bun.com/docs/runtime/jsonl.md): Parse newline-delimited JSON (JSONL) with Bun's built-in streaming parser
 - [JSX](https://bun.com/docs/runtime/jsx.md): Built-in JSX and TSX support in Bun with configurable transpilation options
 - [Module Resolution](https://bun.com/docs/runtime/module-resolution.md): How Bun resolves modules and handles imports in JavaScript and TypeScript
 - [DNS](https://bun.com/docs/runtime/networking/dns.md): Use Bun's DNS module to resolve DNS records
