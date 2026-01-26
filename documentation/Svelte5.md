@@ -1167,6 +1167,8 @@ You can, of course, separate the type declaration from the annotation:
 ```
 
 
+If your component exposes [snippet](snippet) props like `children`, these should be typed using the `Snippet` interface imported from `'svelte'` — see [Typing snippets](snippet#Typing-snippets) for examples.
+
 Adding types is recommended, as it ensures that people using your component can easily discover which props they should provide.
 
 
