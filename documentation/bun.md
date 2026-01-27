@@ -130,6 +130,7 @@
 - [Inspect memory usage using V8 heap snapshots](https://bun.com/docs/guides/runtime/heap-snapshot.md)
 - [Import a HTML file as text](https://bun.com/docs/guides/runtime/import-html.md)
 - [Import a JSON file](https://bun.com/docs/guides/runtime/import-json.md)
+- [Import a JSON5 file](https://bun.com/docs/guides/runtime/import-json5.md)
 - [Import a TOML file](https://bun.com/docs/guides/runtime/import-toml.md)
 - [Import a YAML file](https://bun.com/docs/guides/runtime/import-yaml.md)
 - [Read environment variables](https://bun.com/docs/guides/runtime/read-env.md)
@@ -265,6 +266,7 @@
 - [TLS](https://bun.com/docs/runtime/http/tls.md): Enable TLS in Bun.serve
 - [WebSockets](https://bun.com/docs/runtime/http/websockets.md): Server-side WebSockets in Bun
 - [Bun Runtime](https://bun.com/docs/runtime/index.md): Execute JavaScript/TypeScript files, package.json scripts, and executable packages with Bun's fast runtime.
+- [JSON5](https://bun.com/docs/runtime/json5.md): Use Bun's built-in support for JSON5 files through both runtime APIs and bundler integration
 - [JSONL](https://bun.com/docs/runtime/jsonl.md): Parse newline-delimited JSON (JSONL) with Bun's built-in streaming parser
 - [JSX](https://bun.com/docs/runtime/jsx.md): Built-in JSX and TSX support in Bun with configurable transpilation options
 - [Module Resolution](https://bun.com/docs/runtime/module-resolution.md): How Bun resolves modules and handles imports in JavaScript and TypeScript
