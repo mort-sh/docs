@@ -269,6 +269,7 @@
 - [JSON5](https://bun.com/docs/runtime/json5.md): Use Bun's built-in support for JSON5 files through both runtime APIs and bundler integration
 - [JSONL](https://bun.com/docs/runtime/jsonl.md): Parse newline-delimited JSON (JSONL) with Bun's built-in streaming parser
 - [JSX](https://bun.com/docs/runtime/jsx.md): Built-in JSX and TSX support in Bun with configurable transpilation options
+- [Markdown](https://bun.com/docs/runtime/markdown.md): Parse and render Markdown with Bun's built-in Markdown API, supporting GFM extensions and custom rendering callbacks
 - [Module Resolution](https://bun.com/docs/runtime/module-resolution.md): How Bun resolves modules and handles imports in JavaScript and TypeScript
 - [DNS](https://bun.com/docs/runtime/networking/dns.md): Use Bun's DNS module to resolve DNS records
 - [Fetch](https://bun.com/docs/runtime/networking/fetch.md): Send HTTP requests with Bun's fetch API
