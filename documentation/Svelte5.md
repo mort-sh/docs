@@ -4297,6 +4297,32 @@ import { createContext } from 'svelte';
 export const [getUserContext, setUserContext] = createContext<User>();
 ```
 
+When writing [component tests](testing#Unit-and-component-tests-with-Vitest-Component-testing), it can be useful to create a wrapper component that sets the context in order to check the behaviour of a component that uses it. As of version 5.49, you can do this sort of thing:
+
+```js
+import { mount, unmount } from 'svelte';
+import { expect, test } from 'vitest';
+import { setUserContext } from './context';
+import MyComponent from './MyComponent.svelte';
+
+test('MyComponent', () => {
+	function Wrapper(...args) {
+		setUserContext({ name: 'Bob' });
+		return MyComponent(...args);
+	}
+
+	const component = mount(Wrapper, {
+		target: document.body
+	});
+
+	expect(document.body.innerHTML).toBe('<h1>Hello Bob!</h1>');
+
+	unmount(component);
+});
+```
+
+This approach also works with [`hydrate`](imperative-component-api#hydrate) and [`render`](imperative-component-api#render).
+
 ## Replacing global state
 
 When you have state shared by many different components, you might be tempted to put it in its own module and just import it wherever it's needed:
@@ -4872,7 +4898,7 @@ export default defineConfig({
 		/* ... */
 	],
 	test: {
-		// If you are testing components client-side, you need to setup a DOM environment.
+		// If you are testing components client-side, you need to set up a DOM environment.
 		// If not all your files should have this environment, you can use a
 		// `// @vitest-environment jsdom` comment at the top of the test files instead.
 		environment: 'jsdom'
@@ -14367,10 +14393,10 @@ SvelteKit will load your `+page/layout(.server).js` files (and all files they im
 
 ```js
 +++import { building } from '$app/environment';+++
-import { setupMyDatabase } from '$lib/server/database';
+import { initialiseDatabase } from '$lib/server/database';
 
 +++if (!building) {+++
-	setupMyDatabase();
+	initialiseDatabase();
 +++}+++
 
 export function load() {
@@ -14935,7 +14961,7 @@ export const getTodo = query(v.string(), (id) => {
 });
 ```
 
-...but it is called with something that doesn't match the schema — such as a number (e.g `await getTodos(1)`) — then validation will fail, the server will respond with a [400 status code](https://http.dog/400), and the function will throw with the message 'Bad Request'.
+...but it is called with something that doesn't match the schema — such as a number (e.g. `await getTodos(1)`) — then validation will fail, the server will respond with a [400 status code](https://http.dog/400), and the function will throw with the message 'Bad Request'.
 
 To customise this message and add additional properties to the error object, implement `handleValidationError`:
 
@@ -18055,7 +18081,7 @@ event?: undefined;
 
 <div class="ts-block-property-details">
 
-Dispatched `Event` object when navigation occured by `popstate` or `link`.
+Dispatched `Event` object when navigation occurred by `popstate` or `link`.
 
 </div>
 </div></div>
@@ -18382,6 +18408,28 @@ url: URL;
 <div class="ts-block-property-details">
 
 The URL that is navigated to
+
+</div>
+</div>
+
+<div class="ts-block-property">
+
+```dts
+scroll: { x: number; y: number } | null;
+```
+
+<div class="ts-block-property-details">
+
+The scroll position associated with this navigation.
+
+For the `from` target, this is the scroll position at the moment of navigation.
+
+For the `to` target, this represents the scroll position that will be or was restored:
+- In `beforeNavigate` and `onNavigate`, this is only available for `popstate` navigations (back/forward button)
+	and will be `null` for other navigation types, since the final scroll position isn't known
+	ahead of time.
+- In `afterNavigate`, this is always the scroll position that was applied after the navigation
+	completed.
 
 </div>
 </div></div>
@@ -24254,10 +24302,10 @@ Prevents installing dependencies
 
 ## Official add-ons
 
+- [`better-auth`](better-auth)
 - [`devtools-json`](devtools-json)
 - [`drizzle`](drizzle)
 - [`eslint`](eslint)
-- [`lucia`](lucia)
 - [`mcp`](mcp)
 - [`mdsvex`](mdsvex)
 - [`paraglide`](paraglide)
@@ -24579,7 +24627,7 @@ npx sv add drizzle
 
 - a setup that keeps your database access in SvelteKit's server files
 - an `.env` file to store your credentials
-- compatibility with the Lucia auth add-on
+- compatibility with the Better Auth add-on
 - an optional Docker configuration to help with running a local database
 
 ## Options
@@ -24635,29 +24683,37 @@ npx sv add eslint
 - updated `.vscode/settings.json`
 - configured to work with TypeScript and `prettier` if you're using those packages
 
-# lucia
+# better-auth
 
-An auth setup following [the Lucia auth guide](https://lucia-auth.com/).
+[Better Auth](https://www.better-auth.com/) is a framework-agnostic authentication library for TypeScript.
 
 ## Usage
 
 ```sh
-npx sv add lucia
+npx sv add better-auth
 ```
 
 ## What you get
 
-- an auth setup for SvelteKit and Drizzle following the best practices from the Lucia auth guide
+- a complete auth setup for SvelteKit with Drizzle as the database adapter
+- email/password authentication enabled by default
 - optional demo registration and login pages
 
 ## Options
 
 ### demo
 
-Whether to include demo registration and login pages.
+Which demo pages to include. Available values: `password` (Email & Password), `github` (GitHub OAuth).
 
 ```sh
-npx sv add lucia="demo:yes"
+# Email & Password only (default)
+npx sv add better-auth="demo:password"
+
+# GitHub OAuth only
+npx sv add better-auth="demo:github"
+
+# Both Email & Password and GitHub OAuth
+npx sv add better-auth="demo:password,github"
 ```
 
 # mcp
@@ -25043,10 +25099,9 @@ The setup varies based on the version of the MCP you prefer — remote or local 
 To get the most out of the MCP server we recommend including the following prompt in your [`AGENTS.md`](https://agents.md) (or [`CLAUDE.md`](https://docs.claude.com/en/docs/claude-code/memory#claude-md-imports), if using Claude Code. Or [`GEMINI.md`](https://geminicli.com/docs/cli/gemini-md/), if using GEMINI). This will tell the LLM which tools are available and when it's appropriate to use them.
 
 
-```md
 You are able to use the Svelte MCP server, where you have access to comprehensive Svelte 5 and SvelteKit documentation. Here's how to use the available tools effectively:
 
-## Available MCP Tools:
+## Available Svelte MCP Tools:
 
 ### 1. list-sections
 
@@ -25067,7 +25122,7 @@ You MUST use this tool whenever writing Svelte code before sending it to the use
 
 Generates a Svelte Playground link with the provided code.
 After completing the code, ask the user if they want a playground link. Only call this tool after user confirmation and NEVER if code was written to files in their project.
-```
+
 
 If your MCP client supports it, we also recommend using the [svelte-task](prompts#svelte-task) prompt to instruct the LLM on the best way to use the MCP server.
 
@@ -25681,13 +25736,16 @@ The default configuration for the Svelte OpenCode plugin looks like this...
 	},
 	"skills": {
 		"enabled": true
+	},
+	"instructions": {
+		"enabled": true
 	}
 }
 ```
 
 ...but if you prefer, you can enable only the subagent, only the MCP, only the skills, or configure the kind of MCP server you want to use (`local` or `remote`).
 
-You can place this file in `~/.config/opencode/svelte.json` or, if you have an `OPENCODE_CONFIG_DIR` environment variable specified, at `$OPENCODE_CONFIG_DIR/svelte.json`.
+You can place this file in `./.opencode/svelte.json` (in your project), in `~/.config/opencode/svelte.json` or, if you have an `OPENCODE_CONFIG_DIR` environment variable specified, at `$OPENCODE_CONFIG_DIR/svelte.json`.
 
 # Subagent
 
@@ -25709,7 +25767,7 @@ You can download the latest skills from the [releases page](https://github.com/s
 
 ## `svelte-code-writer`
 
-CLI tools for Svelte 5 documentation lookup and code analysis. MUST be used whenever creating or editing any Svelte component (.svelte) or Svelte module (.svelte.ts/.svelte.js). If possible, this skill should be executed within the svelte-file-editor agent for optimal results.
+CLI tools for Svelte 5 documentation lookup and code analysis. MUST be used whenever creating, editing or analyzing any Svelte component (.svelte) or Svelte module (.svelte.ts/.svelte.js). If possible, this skill should be executed within the svelte-file-editor agent for optimal results.
 
 <a href="https://github.com/sveltejs/mcp/releases?q=svelte-code-writer" target="_blank" rel="noopener noreferrer">Open Releases page</a>
 
