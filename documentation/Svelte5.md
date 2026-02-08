@@ -2238,6 +2238,14 @@ Attachments can also be created inline ([demo](/REMOVED)):
 
 > The nested effect runs whenever `color` changes, while the outer effect (where `canvas.getContext(...)` is called) only runs once, since it doesn't read any reactive state.
 
+## Conditional attachments
+
+Falsy values like `false` or `undefined` are treated as no attachment, enabling conditional usage:
+
+```svelte
+<div {@attach enabled && myAttachment}>...</div>
+```
+
 ## Passing attachments to components
 
 When used on a component, `{@attach ...}` will create a prop whose key is a [`Symbol`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol). If the component then [spreads](/tutorial/svelte/spread-props) props onto an element, the element will receive those attachments.
@@ -12927,7 +12935,9 @@ export const prerender = true;
 
 ## ssr
 
-Normally, SvelteKit renders your page on the server first and sends that HTML to the client where it's [hydrated](glossary#Hydration). If you set `ssr` to `false`, it renders an empty 'shell' page instead. This is useful if your page is unable to be rendered on the server (because you use browser-only globals like `document` for example), but in most situations it's not recommended ([see appendix](glossary#SSR)).
+Normally, SvelteKit renders your page on the server before sending that HTML to the client where it's [hydrated](glossary#Hydration). This is also required for prerendering to save the full contents of a page.
+
+If you set `ssr` to `false`, it renders an empty 'shell' page instead. This is useful if your page is unable to be rendered on the server (because you use browser-only globals like `document` for example), but in most situations it's not recommended ([see appendix](glossary#SSR)).
 
 ```js
 /// file: +page.js
@@ -12935,7 +12945,7 @@ export const ssr = false;
 // If both `ssr` and `csr` are `false`, nothing will be rendered!
 ```
 
-If you add `export const ssr = false` to your root `+layout.js`, your entire app will only be rendered on the client — which essentially means you turn your app into an SPA.
+If you add `export const ssr = false` to your root `+layout.js`, your entire app will only be rendered on the client — which essentially means you turn your app into an [SPA](glossary#SPA). You should not do this if your goal is to build a [statically generated site](glossary#SSG).
 
 
 ## csr
