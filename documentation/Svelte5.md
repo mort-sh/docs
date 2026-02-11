@@ -11151,6 +11151,23 @@ Pages can receive data from `load` functions via the `data` prop.
 <div>{@html data.content}</div>
 ```
 
+As of 2.24, pages also receive a `params` prop which is typed based on the route parameters. This is particularly useful alongside [remote functions](remote-functions):
+
+```svelte
+<!--- file: src/routes/blog/[slug]/+page.svelte --->
+<script>
+	import { getPost } from '../blog.remote';
+
+	/** @type {import('./$types').PageProps} */
+	let { params } = $props();
+
+	const post = $derived(await getPost(params.slug));
+</script>
+
+<h1>{post.title}</h1>
+<div>{@html post.content}</div>
+```
+
 > `PageProps` was added in 2.16.0. In earlier versions, you had to type the `data` property manually with `PageData` instead, see [$types](#\$types).
 >
 > In Svelte 4, you'd use `export let data` instead.
@@ -13404,14 +13421,14 @@ import * as v from 'valibot';
 import { query } from '$app/server';
 import * as db from '$lib/server/database';
 
-export const getWeather = query.batch(v.string(), async (cities) => {
+export const getWeather = query.batch(v.string(), async (cityIds) => {
 	const weather = await db.sql`
 		SELECT * FROM weather
-		WHERE city = ANY(${cities})
+		WHERE city_id = ANY(${cityIds})
 	`;
-	const lookup = new Map(weather.map(w => [w.city, w]));
+	const lookup = new Map(weather.map(w => [w.city_id, w]));
 
-	return (city) => lookup.get(city);
+	return (cityId) => lookup.get(cityId);
 });
 ```
 
@@ -13419,7 +13436,7 @@ export const getWeather = query.batch(v.string(), async (cities) => {
 <!--- file: Weather.svelte --->
 <script>
 	import CityWeather from './CityWeather.svelte';
-	import { getWeather } from './weather.remote.js';
+	import { getWeather } from './weather.remote';
 
 	let { cities } = $props();
 	let limit = $state(5);
