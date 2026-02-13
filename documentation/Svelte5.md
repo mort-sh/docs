@@ -6911,9 +6911,7 @@ The parseCss function parses a CSS stylesheet, returning its abstract syntax tre
 <div class="ts-block">
 
 ```dts
-function parseCss(
-	source: string
-): Omit<AST.CSS.StyleSheet, 'attributes' | 'content'>;
+function parseCss(source: string): AST.CSS.StyleSheetFile;
 ```
 
 </div>
