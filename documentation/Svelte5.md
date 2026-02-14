@@ -30,7 +30,7 @@ You can use it to build anything on the web, from standalone components to ambit
 
 These pages serve as reference documentation. If you're new to Svelte, we recommend starting with the [interactive tutorial](/tutorial) and coming back here when you have questions.
 
-You can also try Svelte online in the [playground](/playground) or, if you need a more fully-featured environment, on [StackBlitz](https://sveltekit.new).
+You can also try Svelte online in the playground.
 
 # Getting started
 
@@ -1593,7 +1593,7 @@ Additional conditions can be added with `{:else if expression}`, optionally endi
 {#each expression as name, index}...{/each}
 ```
 
-Iterating over values can be done with an each block. The values in question can be arrays, array-like objects (i.e. anything with a `length` property), or iterables like `Map` and `Set`— in other words, anything that can be used with `Array.from`.
+Iterating over values can be done with an each block. The values in question can be arrays, array-like objects (i.e. anything with a `length` property), or iterables like `Map` and `Set`. (Internally, they are converted to arrays with [`Array.from`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from).)
 
 If the value is `null` or `undefined`, it is treated the same as an empty array (which will cause [else blocks](#Else-blocks) to be rendered, where applicable).
 
